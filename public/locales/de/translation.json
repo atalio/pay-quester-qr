@@ -1,0 +1,39 @@
+
+{
+  "title": "Bitbob Zahlungsanforderung",
+  "subtitle": "QR-Code für Zahlungsanforderungen generieren",
+  "fields": {
+    "xrpAddress": {
+      "label": "XRP-Adresse (Erforderlich)",
+      "placeholder": "XRP-Adresse eingeben"
+    },
+    "amount": {
+      "label": "Betrag (Erforderlich)",
+      "placeholder": "Betrag in"
+    },
+    "merchantName": {
+      "label": "Händlername (Optional)",
+      "placeholder": "Händlername eingeben"
+    },
+    "productName": {
+      "label": "Produktname (Optional)",
+      "placeholder": "Produktname eingeben"
+    }
+  },
+  "currency": {
+    "xrp": "XRP",
+    "usd": "USD"
+  },
+  "buttons": {
+    "generate": "QR-Code generieren"
+  },
+  "qrCode": {
+    "title": "Zahlungsanforderung - Mit Bitbob App scannen"
+  },
+  "errors": {
+    "requiredFields": {
+      "title": "Pflichtfelder fehlen",
+      "description": "Bitte füllen Sie alle erforderlichen Felder aus."
+    }
+  }
+}

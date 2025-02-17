@@ -1,7 +1,8 @@
 
-import { useState } from "react";
-import { QRCode } from "qrcode.react";
+import { useState, useEffect } from "react";
+import QRCode from "qrcode.react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import {
   WhatsappShareButton,
   EmailShareButton,
@@ -15,9 +16,18 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Globe } from "lucide-react";
 
 const Index = () => {
   const { toast } = useToast();
+  const { t, i18n } = useTranslation();
+  const [languages, setLanguages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     merchantName: "",
     productName: "",
@@ -28,6 +38,18 @@ const Index = () => {
   const [isAmountInXRP, setIsAmountInXRP] = useState(true);
   const [qrData, setQrData] = useState("");
 
+  useEffect(() => {
+    // Dynamically fetch available languages
+    fetch("/locales/languages.json")
+      .catch(() => {
+        // If languages.json doesn't exist, default to hardcoded languages
+        return { json: () => Promise.resolve(["en", "es", "de"]) };
+      })
+      .then((response) => response.json())
+      .then((data) => setLanguages(Array.isArray(data) ? data : ["en", "es", "de"]))
+      .catch(console.error);
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -36,8 +58,8 @@ const Index = () => {
   const generateQRCode = () => {
     if (!formData.amount || !formData.xrpAddress) {
       toast({
-        title: "Required Fields Missing",
-        description: "Please fill in all required fields.",
+        title: t("errors.requiredFields.title"),
+        description: t("errors.requiredFields.description"),
         variant: "destructive",
       });
       return;
@@ -51,30 +73,60 @@ const Index = () => {
 
   const shareableContent = `Here is the Bitbob QR code!\n\nQR Code Data:\n${qrData}\n\nFor more information, visit: https://bitbob.app`;
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
+  const getLanguageLabel = (code: string) => {
+    const labels: { [key: string]: string } = {
+      en: "English",
+      es: "Español",
+      de: "Deutsch",
+    };
+    return labels[code] || code;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4 md:p-8">
       <div className="max-w-2xl mx-auto space-y-8">
+        <div className="flex justify-end mb-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Globe className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {languages.map((lng) => (
+                <DropdownMenuItem key={lng} onClick={() => changeLanguage(lng)}>
+                  {getLanguageLabel(lng)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
         <div className="text-center space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900">Bitbob Payment Request</h1>
-          <p className="text-muted-foreground">Generate a QR code for payment requests</p>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
 
         <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-in">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="xrpAddress">XRP Address (Required)</Label>
+              <Label htmlFor="xrpAddress">{t("fields.xrpAddress.label")}</Label>
               <Input
                 id="xrpAddress"
                 name="xrpAddress"
                 value={formData.xrpAddress}
                 onChange={handleInputChange}
-                placeholder="Enter your XRP address"
+                placeholder={t("fields.xrpAddress.placeholder")}
                 className="transition-all focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (Required)</Label>
+              <Label htmlFor="amount">{t("fields.amount.label")}</Label>
               <div className="flex items-center space-x-4">
                 <Input
                   id="amount"
@@ -82,7 +134,9 @@ const Index = () => {
                   type="number"
                   value={formData.amount}
                   onChange={handleInputChange}
-                  placeholder={`Amount in ${isAmountInXRP ? "XRP" : "USD"}`}
+                  placeholder={`${t("fields.amount.placeholder")} ${
+                    isAmountInXRP ? t("currency.xrp") : t("currency.usd")
+                  }`}
                   className="transition-all focus:ring-2 focus:ring-blue-500"
                 />
                 <div className="flex items-center space-x-2">
@@ -90,31 +144,31 @@ const Index = () => {
                     checked={isAmountInXRP}
                     onCheckedChange={setIsAmountInXRP}
                   />
-                  <Label>XRP</Label>
+                  <Label>{t("currency.xrp")}</Label>
                 </div>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="merchantName">Merchant Name (Optional)</Label>
+              <Label htmlFor="merchantName">{t("fields.merchantName.label")}</Label>
               <Input
                 id="merchantName"
                 name="merchantName"
                 value={formData.merchantName}
                 onChange={handleInputChange}
-                placeholder="Enter merchant name"
+                placeholder={t("fields.merchantName.placeholder")}
                 className="transition-all focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="productName">Product Name (Optional)</Label>
+              <Label htmlFor="productName">{t("fields.productName.label")}</Label>
               <Input
                 id="productName"
                 name="productName"
                 value={formData.productName}
                 onChange={handleInputChange}
-                placeholder="Enter product name"
+                placeholder={t("fields.productName.placeholder")}
                 className="transition-all focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -123,7 +177,7 @@ const Index = () => {
               onClick={generateQRCode}
               className="w-full bg-blue-600 hover:bg-blue-700 transition-colors"
             >
-              Generate QR Code
+              {t("buttons.generate")}
             </Button>
           </div>
         </Card>
@@ -131,7 +185,7 @@ const Index = () => {
         {qrData && (
           <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-up">
             <div className="text-center space-y-4">
-              <p className="text-gray-700 font-medium">Payment Request - Scan me with Bitbob App</p>
+              <p className="text-gray-700 font-medium">{t("qrCode.title")}</p>
               <div className="flex justify-center">
                 <div className="relative p-4 bg-white rounded-2xl shadow-sm">
                   <QRCode

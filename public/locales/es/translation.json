@@ -1,0 +1,39 @@
+
+{
+  "title": "Solicitud de Pago Bitbob",
+  "subtitle": "Generar código QR para solicitudes de pago",
+  "fields": {
+    "xrpAddress": {
+      "label": "Dirección XRP (Requerido)",
+      "placeholder": "Ingrese su dirección XRP"
+    },
+    "amount": {
+      "label": "Cantidad (Requerido)",
+      "placeholder": "Cantidad en"
+    },
+    "merchantName": {
+      "label": "Nombre del Comerciante (Opcional)",
+      "placeholder": "Ingrese nombre del comerciante"
+    },
+    "productName": {
+      "label": "Nombre del Producto (Opcional)",
+      "placeholder": "Ingrese nombre del producto"
+    }
+  },
+  "currency": {
+    "xrp": "XRP",
+    "usd": "USD"
+  },
+  "buttons": {
+    "generate": "Generar Código QR"
+  },
+  "qrCode": {
+    "title": "Solicitud de Pago - Escanear con la App Bitbob"
+  },
+  "errors": {
+    "requiredFields": {
+      "title": "Faltan Campos Requeridos",
+      "description": "Por favor complete todos los campos requeridos."
+    }
+  }
+}
