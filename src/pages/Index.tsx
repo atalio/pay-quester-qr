@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import QRCode from "qrcode.react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -39,17 +38,149 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
 
-// Currency data
 const fiatCurrencies = [
+  { code: "AFN", name: "Afghan Afghani" },
+  { code: "ALL", name: "Albanian Lek" },
+  { code: "DZD", name: "Algerian Dinar" },
   { code: "USD", name: "US Dollar" },
   { code: "EUR", name: "Euro" },
-  { code: "GBP", name: "British Pound" },
-  { code: "JPY", name: "Japanese Yen" },
+  { code: "AOA", name: "Angolan Kwanza" },
+  { code: "ARS", name: "Argentine Peso" },
+  { code: "AMD", name: "Armenian Dram" },
+  { code: "AWG", name: "Aruban Florin" },
   { code: "AUD", name: "Australian Dollar" },
+  { code: "AZN", name: "Azerbaijani Manat" },
+  { code: "BSD", name: "Bahamian Dollar" },
+  { code: "BHD", name: "Bahraini Dinar" },
+  { code: "BDT", name: "Bangladeshi Taka" },
+  { code: "BBD", name: "Barbadian Dollar" },
+  { code: "BYN", name: "Belarusian Ruble" },
+  { code: "BZD", name: "Belize Dollar" },
+  { code: "XOF", name: "West African CFA Franc" },
+  { code: "BMD", name: "Bermudian Dollar" },
+  { code: "BTN", name: "Bhutanese Ngultrum" },
+  { code: "BOB", name: "Bolivian Boliviano" },
+  { code: "BAM", name: "Bosnia-Herzegovina Convertible Mark" },
+  { code: "BWP", name: "Botswanan Pula" },
+  { code: "BRL", name: "Brazilian Real" },
+  { code: "GBP", name: "British Pound" },
+  { code: "BND", name: "Brunei Dollar" },
+  { code: "BGN", name: "Bulgarian Lev" },
+  { code: "BIF", name: "Burundian Franc" },
+  { code: "KHR", name: "Cambodian Riel" },
   { code: "CAD", name: "Canadian Dollar" },
-  { code: "CHF", name: "Swiss Franc" },
+  { code: "CVE", name: "Cape Verdean Escudo" },
+  { code: "KYD", name: "Cayman Islands Dollar" },
+  { code: "XAF", name: "Central African CFA Franc" },
+  { code: "CLP", name: "Chilean Peso" },
   { code: "CNY", name: "Chinese Yuan" },
-  // Add more currencies as needed
+  { code: "COP", name: "Colombian Peso" },
+  { code: "KMF", name: "Comorian Franc" },
+  { code: "CDF", name: "Congolese Franc" },
+  { code: "CRC", name: "Costa Rican Colón" },
+  { code: "HRK", name: "Croatian Kuna" },
+  { code: "CUP", name: "Cuban Peso" },
+  { code: "CZK", name: "Czech Koruna" },
+  { code: "DKK", name: "Danish Krone" },
+  { code: "DJF", name: "Djiboutian Franc" },
+  { code: "DOP", name: "Dominican Peso" },
+  { code: "EGP", name: "Egyptian Pound" },
+  { code: "ERN", name: "Eritrean Nakfa" },
+  { code: "ETB", name: "Ethiopian Birr" },
+  { code: "FJD", name: "Fijian Dollar" },
+  { code: "GMD", name: "Gambian Dalasi" },
+  { code: "GEL", name: "Georgian Lari" },
+  { code: "GHS", name: "Ghanaian Cedi" },
+  { code: "GTQ", name: "Guatemalan Quetzal" },
+  { code: "GNF", name: "Guinean Franc" },
+  { code: "GYD", name: "Guyanaese Dollar" },
+  { code: "HTG", name: "Haitian Gourde" },
+  { code: "HNL", name: "Honduran Lempira" },
+  { code: "HKD", name: "Hong Kong Dollar" },
+  { code: "HUF", name: "Hungarian Forint" },
+  { code: "ISK", name: "Icelandic Króna" },
+  { code: "INR", name: "Indian Rupee" },
+  { code: "IDR", name: "Indonesian Rupiah" },
+  { code: "IRR", name: "Iranian Rial" },
+  { code: "IQD", name: "Iraqi Dinar" },
+  { code: "ILS", name: "Israeli New Shekel" },
+  { code: "JMD", name: "Jamaican Dollar" },
+  { code: "JPY", name: "Japanese Yen" },
+  { code: "JOD", name: "Jordanian Dinar" },
+  { code: "KZT", name: "Kazakhstani Tenge" },
+  { code: "KES", name: "Kenyan Shilling" },
+  { code: "KWD", name: "Kuwaiti Dinar" },
+  { code: "KGS", name: "Kyrgystani Som" },
+  { code: "LAK", name: "Laotian Kip" },
+  { code: "LBP", name: "Lebanese Pound" },
+  { code: "LSL", name: "Lesotho Loti" },
+  { code: "LRD", name: "Liberian Dollar" },
+  { code: "LYD", name: "Libyan Dinar" },
+  { code: "CHF", name: "Swiss Franc" },
+  { code: "MOP", name: "Macanese Pataca" },
+  { code: "MGA", name: "Malagasy Ariary" },
+  { code: "MWK", name: "Malawian Kwacha" },
+  { code: "MYR", name: "Malaysian Ringgit" },
+  { code: "MVR", name: "Maldivian Rufiyaa" },
+  { code: "MRU", name: "Mauritanian Ouguiya" },
+  { code: "MUR", name: "Mauritian Rupee" },
+  { code: "MXN", name: "Mexican Peso" },
+  { code: "MDL", name: "Moldovan Leu" },
+  { code: "MNT", name: "Mongolian Tugrik" },
+  { code: "MAD", name: "Moroccan Dirham" },
+  { code: "MZN", name: "Mozambican Metical" },
+  { code: "MMK", name: "Myanmar Kyat" },
+  { code: "NAD", name: "Namibian Dollar" },
+  { code: "NPR", name: "Nepalese Rupee" },
+  { code: "TWD", name: "New Taiwan Dollar" },
+  { code: "NZD", name: "New Zealand Dollar" },
+  { code: "NIO", name: "Nicaraguan Córdoba" },
+  { code: "NGN", name: "Nigerian Naira" },
+  { code: "NOK", name: "Norwegian Krone" },
+  { code: "OMR", name: "Omani Rial" },
+  { code: "PKR", name: "Pakistani Rupee" },
+  { code: "PGK", name: "Papua New Guinean Kina" },
+  { code: "PYG", name: "Paraguayan Guarani" },
+  { code: "PEN", name: "Peruvian Sol" },
+  { code: "PHP", name: "Philippine Peso" },
+  { code: "PLN", name: "Polish Złoty" },
+  { code: "QAR", name: "Qatari Rial" },
+  { code: "RON", name: "Romanian Leu" },
+  { code: "RUB", name: "Russian Ruble" },
+  { code: "RWF", name: "Rwandan Franc" },
+  { code: "SAR", name: "Saudi Riyal" },
+  { code: "RSD", name: "Serbian Dinar" },
+  { code: "SCR", name: "Seychellois Rupee" },
+  { code: "SLL", name: "Sierra Leonean Leone" },
+  { code: "SGD", name: "Singapore Dollar" },
+  { code: "SBD", name: "Solomon Islands Dollar" },
+  { code: "SOS", name: "Somali Shilling" },
+  { code: "ZAR", name: "South African Rand" },
+  { code: "KRW", name: "South Korean Won" },
+  { code: "SSP", name: "South Sudanese Pound" },
+  { code: "LKR", name: "Sri Lankan Rupee" },
+  { code: "SDG", name: "Sudanese Pound" },
+  { code: "SRD", name: "Surinamese Dollar" },
+  { code: "SEK", name: "Swedish Krona" },
+  { code: "SYP", name: "Syrian Pound" },
+  { code: "TJS", name: "Tajikistani Somoni" },
+  { code: "TZS", name: "Tanzanian Shilling" },
+  { code: "THB", name: "Thai Baht" },
+  { code: "TOP", name: "Tongan Paʻanga" },
+  { code: "TTD", name: "Trinidad & Tobago Dollar" },
+  { code: "TND", name: "Tunisian Dinar" },
+  { code: "TRY", name: "Turkish Lira" },
+  { code: "TMT", name: "Turkmenistani Manat" },
+  { code: "UGX", name: "Ugandan Shilling" },
+  { code: "UAH", name: "Ukrainian Hryvnia" },
+  { code: "AED", name: "United Arab Emirates Dirham" },
+  { code: "UYU", name: "Uruguayan Peso" },
+  { code: "UZS", name: "Uzbekistani Som" },
+  { code: "VUV", name: "Vanuatu Vatu" },
+  { code: "VEF", name: "Venezuelan Bolívar" },
+  { code: "VND", name: "Vietnamese Dong" },
+  { code: "YER", name: "Yemeni Rial" },
+  { code: "ZMW", name: "Zambian Kwacha" }
 ];
 
 const Index = () => {
@@ -67,24 +198,45 @@ const Index = () => {
   const [selectedFiat, setSelectedFiat] = useState("USD");
   const [qrData, setQrData] = useState("");
   const [showNumpad, setShowNumpad] = useState(false);
+  const [qrOptions, setQrOptions] = useState({
+    size: 200,
+    level: "H",
+    includeMargin: true,
+    color: "#000000",
+    backgroundColor: "#ffffff",
+    style: "dots",
+  });
+  const numpadTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    // Set available languages
     setLanguages(["en", "es", "de"]);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (numpadTimeoutRef.current) {
+        clearTimeout(numpadTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
     if (name === "amount") {
-      // Replace commas with dots and filter out invalid characters
       const sanitizedValue = value.replace(/,/g, ".");
       const numericValue = sanitizedValue.replace(/[^\d.]/g, "");
-      // Ensure only one decimal point
       const parts = numericValue.split(".");
       const finalValue = parts[0] + (parts.length > 1 ? "." + parts[1] : "");
       
       setFormData((prev) => ({ ...prev, [name]: finalValue }));
+      
+      if (numpadTimeoutRef.current) {
+        clearTimeout(numpadTimeoutRef.current);
+      }
+      numpadTimeoutRef.current = setTimeout(() => {
+        setShowNumpad(false);
+      }, 800);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
@@ -160,6 +312,23 @@ const Index = () => {
       ))}
     </div>
   );
+
+  const exportQRCode = () => {
+    const canvas = document.querySelector("canvas");
+    if (canvas) {
+      const url = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = "bitbob-qr-code.png";
+      link.href = url;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
+  const updateQRStyle = (style: string) => {
+    setQrOptions(prev => ({ ...prev, style }));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4 md:p-8">
@@ -289,12 +458,42 @@ const Index = () => {
           <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-up">
             <div className="text-center space-y-4">
               <p className="text-gray-700 font-medium">{t("qrCode.title")}</p>
+              
+              <div className="flex flex-col gap-4">
+                <div className="flex gap-2 justify-center">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => updateQRStyle("dots")}
+                  >
+                    Dots
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => updateQRStyle("squares")}
+                  >
+                    Squares
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={exportQRCode}
+                  >
+                    Export PNG
+                  </Button>
+                </div>
+              </div>
+
               <div className="flex justify-center">
                 <div className="relative p-4 bg-white rounded-2xl shadow-sm">
                   <QRCode
                     value={qrData}
-                    size={200}
-                    level="H"
+                    size={qrOptions.size}
+                    level={qrOptions.level as "L" | "M" | "Q" | "H"}
+                    includeMargin={qrOptions.includeMargin}
+                    fgColor={qrOptions.color}
+                    bgColor={qrOptions.backgroundColor}
                     renderAs="svg"
                     imageSettings={{
                       src: "/lovable-uploads/04f01451-2fee-4a5b-87b8-4d15deb89578.png",
@@ -308,6 +507,7 @@ const Index = () => {
                   />
                 </div>
               </div>
+              
               <p className="text-gray-600 whitespace-pre-line text-sm">{qrData}</p>
               
               <div className="flex flex-wrap justify-center gap-4 pt-4">
