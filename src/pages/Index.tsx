@@ -7,9 +7,17 @@ import {
   WhatsappShareButton,
   EmailShareButton,
   TwitterShareButton,
+  LinkedinShareButton,
+  FacebookShareButton,
+  TelegramShareButton,
+  RedditShareButton,
   WhatsappIcon,
   EmailIcon,
   TwitterIcon,
+  LinkedinIcon,
+  FacebookIcon,
+  TelegramIcon,
+  RedditIcon,
 } from "react-share";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,12 +25,32 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Globe } from "lucide-react";
+
+// Currency data
+const fiatCurrencies = [
+  { code: "USD", name: "US Dollar" },
+  { code: "EUR", name: "Euro" },
+  { code: "GBP", name: "British Pound" },
+  { code: "JPY", name: "Japanese Yen" },
+  { code: "AUD", name: "Australian Dollar" },
+  { code: "CAD", name: "Canadian Dollar" },
+  { code: "CHF", name: "Swiss Franc" },
+  { code: "CNY", name: "Chinese Yuan" },
+  // Add more currencies as needed
+];
 
 const Index = () => {
   const { toast } = useToast();
@@ -36,23 +64,55 @@ const Index = () => {
     xrpAddress: "",
   });
   const [isAmountInXRP, setIsAmountInXRP] = useState(true);
+  const [selectedFiat, setSelectedFiat] = useState("USD");
   const [qrData, setQrData] = useState("");
+  const [showNumpad, setShowNumpad] = useState(false);
 
   useEffect(() => {
-    // Dynamically fetch available languages
-    fetch("/locales/languages.json")
-      .catch(() => {
-        // If languages.json doesn't exist, default to hardcoded languages
-        return { json: () => Promise.resolve(["en", "es", "de"]) };
-      })
-      .then((response) => response.json())
-      .then((data) => setLanguages(Array.isArray(data) ? data : ["en", "es", "de"]))
-      .catch(console.error);
+    // Set available languages
+    setLanguages(["en", "es", "de"]);
   }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    if (name === "amount") {
+      // Replace commas with dots and filter out invalid characters
+      const sanitizedValue = value.replace(/,/g, ".");
+      const numericValue = sanitizedValue.replace(/[^\d.]/g, "");
+      // Ensure only one decimal point
+      const parts = numericValue.split(".");
+      const finalValue = parts[0] + (parts.length > 1 ? "." + parts[1] : "");
+      
+      setFormData((prev) => ({ ...prev, [name]: finalValue }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleNumpadClick = (value: string) => {
+    if (value === "backspace") {
+      setFormData((prev) => ({
+        ...prev,
+        amount: prev.amount.slice(0, -1),
+      }));
+      return;
+    }
+    
+    if (value === ".") {
+      if (!formData.amount.includes(".")) {
+        setFormData((prev) => ({
+          ...prev,
+          amount: prev.amount + value,
+        }));
+      }
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      amount: prev.amount + value,
+    }));
   };
 
   const generateQRCode = () => {
@@ -67,11 +127,11 @@ const Index = () => {
 
     const qrContent = `Merchant: ${formData.merchantName}\nProduct: ${formData.productName}\nAmount: ${
       formData.amount
-    }\nCurrency: ${isAmountInXRP ? "XRP" : "USD"}\nXRP Address: ${formData.xrpAddress}`;
+    }\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}`;
     setQrData(qrContent);
   };
 
-  const shareableContent = `Here is the Bitbob QR code!\n\nQR Code Data:\n${qrData}\n\nFor more information, visit: https://bitbob.app`;
+  const shareableContent = `Payment Request - Scan me with Bitbob App\n\nQR Code Data:\n${qrData}\n\nFor more information, visit: https://bitbob.app`;
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -85,6 +145,21 @@ const Index = () => {
     };
     return labels[code] || code;
   };
+
+  const renderNumpad = () => (
+    <div className="grid grid-cols-3 gap-2 p-4 bg-white rounded-lg shadow-lg">
+      {[1, 2, 3, 4, 5, 6, 7, 8, 9, ".", 0, "←"].map((num) => (
+        <Button
+          key={num}
+          variant="outline"
+          onClick={() => handleNumpadClick(num === "←" ? "backspace" : num.toString())}
+          className="p-4 text-xl"
+        >
+          {num}
+        </Button>
+      ))}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4 md:p-8">
@@ -128,23 +203,51 @@ const Index = () => {
             <div className="space-y-2">
               <Label htmlFor="amount">{t("fields.amount.label")}</Label>
               <div className="flex items-center space-x-4">
-                <Input
-                  id="amount"
-                  name="amount"
-                  type="number"
-                  value={formData.amount}
-                  onChange={handleInputChange}
-                  placeholder={`${t("fields.amount.placeholder")} ${
-                    isAmountInXRP ? t("currency.xrp") : t("currency.usd")
-                  }`}
-                  className="transition-all focus:ring-2 focus:ring-blue-500"
-                />
+                <div className="relative flex-1">
+                  <Input
+                    id="amount"
+                    name="amount"
+                    value={formData.amount}
+                    onChange={handleInputChange}
+                    onFocus={() => setShowNumpad(true)}
+                    placeholder={`${t("fields.amount.placeholder")} ${
+                      isAmountInXRP ? t("currency.xrp") : selectedFiat
+                    }`}
+                    className="transition-all focus:ring-2 focus:ring-blue-500"
+                    readOnly
+                  />
+                  {showNumpad && (
+                    <div className="absolute top-full left-0 z-50 mt-2">
+                      {renderNumpad()}
+                    </div>
+                  )}
+                </div>
                 <div className="flex items-center space-x-2">
                   <Switch
                     checked={isAmountInXRP}
-                    onCheckedChange={setIsAmountInXRP}
+                    onCheckedChange={(checked) => {
+                      setIsAmountInXRP(checked);
+                      if (!checked) {
+                        setSelectedFiat("USD");
+                      }
+                    }}
                   />
-                  <Label>{t("currency.xrp")}</Label>
+                  {isAmountInXRP ? (
+                    <Label>{t("currency.xrp")}</Label>
+                  ) : (
+                    <Select value={selectedFiat} onValueChange={setSelectedFiat}>
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {fiatCurrencies.map((currency) => (
+                          <SelectItem key={currency.code} value={currency.code}>
+                            {currency.code}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               </div>
             </div>
@@ -192,6 +295,7 @@ const Index = () => {
                     value={qrData}
                     size={200}
                     level="H"
+                    renderAs="svg"
                     imageSettings={{
                       src: "/lovable-uploads/04f01451-2fee-4a5b-87b8-4d15deb89578.png",
                       x: undefined,
@@ -200,12 +304,13 @@ const Index = () => {
                       width: 40,
                       excavate: true,
                     }}
+                    style={{ width: "100%", height: "auto" }}
                   />
                 </div>
               </div>
               <p className="text-gray-600 whitespace-pre-line text-sm">{qrData}</p>
               
-              <div className="flex justify-center space-x-4 pt-4">
+              <div className="flex flex-wrap justify-center gap-4 pt-4">
                 <WhatsappShareButton url="https://bitbob.app" title={shareableContent}>
                   <WhatsappIcon size={32} round />
                 </WhatsappShareButton>
@@ -215,6 +320,18 @@ const Index = () => {
                 <TwitterShareButton url="https://bitbob.app" title={shareableContent}>
                   <TwitterIcon size={32} round />
                 </TwitterShareButton>
+                <LinkedinShareButton url="https://bitbob.app" title={shareableContent}>
+                  <LinkedinIcon size={32} round />
+                </LinkedinShareButton>
+                <FacebookShareButton url="https://bitbob.app" quote={shareableContent}>
+                  <FacebookIcon size={32} round />
+                </FacebookShareButton>
+                <TelegramShareButton url="https://bitbob.app" title={shareableContent}>
+                  <TelegramIcon size={32} round />
+                </TelegramShareButton>
+                <RedditShareButton url="https://bitbob.app" title={shareableContent}>
+                  <RedditIcon size={32} round />
+                </RedditShareButton>
               </div>
             </div>
           </Card>
