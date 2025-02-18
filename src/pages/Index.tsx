@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -102,6 +101,10 @@ const Index = () => {
     }));
   };
 
+  const handleNumpadClose = () => {
+    setShowNumpad(false);
+  };
+
   const generateQRCode = () => {
     if (!formData.amount || !formData.xrpAddress) {
       toast({
@@ -190,7 +193,10 @@ const Index = () => {
                   />
                   {showNumpad && (
                     <div className="absolute top-full left-0 z-50 mt-2">
-                      <NumericKeypad onKeyPress={handleNumpadClick} />
+                      <NumericKeypad 
+                        onKeyPress={handleNumpadClick}
+                        onClose={handleNumpadClose}
+                      />
                     </div>
                   )}
                 </div>

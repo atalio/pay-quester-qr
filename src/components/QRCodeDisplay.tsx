@@ -18,6 +18,8 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
     style: "dots" as "dots" | "squares",
   });
 
+  const [selectedStyle, setSelectedStyle] = useState<"classic" | "dots" | "rounded">("rounded");
+
   const exportQRCode = () => {
     const canvas = document.querySelector("canvas");
     if (canvas) {
@@ -31,26 +33,48 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
     }
   };
 
-  const updateQRStyle = (style: "dots" | "squares") => {
-    setQrOptions(prev => ({ ...prev, style }));
+  const getQRStyle = () => {
+    switch (selectedStyle) {
+      case "dots":
+        return "circle";
+      case "rounded":
+        return "rounded";
+      default:
+        return "square";
+    }
+  };
+
+  const updateQRStyle = (style: "classic" | "dots" | "rounded") => {
+    setSelectedStyle(style);
+    setQrOptions(prev => ({
+      ...prev,
+      style: style === "classic" ? "squares" : "dots",
+    }));
   };
 
   return (
     <div className="space-y-4">
       <div className="flex gap-2 justify-center">
         <Button
-          variant="outline"
+          variant={selectedStyle === "classic" ? "default" : "outline"}
+          size="sm"
+          onClick={() => updateQRStyle("classic")}
+        >
+          Classic
+        </Button>
+        <Button
+          variant={selectedStyle === "dots" ? "default" : "outline"}
           size="sm"
           onClick={() => updateQRStyle("dots")}
         >
           Dots
         </Button>
         <Button
-          variant="outline"
+          variant={selectedStyle === "rounded" ? "default" : "outline"}
           size="sm"
-          onClick={() => updateQRStyle("squares")}
+          onClick={() => updateQRStyle("rounded")}
         >
-          Squares
+          Rounded
         </Button>
         <Button
           variant="outline"
@@ -80,9 +104,25 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
               excavate: true,
             } : undefined}
             style={{ width: "100%", height: "auto" }}
+            className={`qr-code-${selectedStyle}`}
           />
         </div>
       </div>
+
+      <style>
+        {`
+          .qr-code-dots path:not(:last-child) {
+            stroke-width: 0;
+            rx: 50;
+            ry: 50;
+          }
+          .qr-code-rounded path:not(:last-child) {
+            stroke-width: 0;
+            rx: 8;
+            ry: 8;
+          }
+        `}
+      </style>
     </div>
   );
 };
