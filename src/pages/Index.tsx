@@ -48,14 +48,6 @@ const Index = () => {
     setLanguages(["en", "es", "de"]);
   }, []);
 
-  useEffect(() => {
-    return () => {
-      if (numpadTimeoutRef.current) {
-        clearTimeout(numpadTimeoutRef.current);
-      }
-    };
-  }, []);
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
@@ -107,6 +99,23 @@ const Index = () => {
     setShowNumpad(false);
   };
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
+  const getLanguageLabel = (lng: string): string => {
+    switch (lng) {
+      case "en":
+        return "English";
+      case "es":
+        return "Español";
+      case "de":
+        return "Deutsch";
+      default:
+        return lng;
+    }
+  };
+
   const generateQRCode = () => {
     if (!formData.amount || !formData.xrpAddress) {
       toast({
@@ -121,6 +130,10 @@ const Index = () => {
       formData.amount
     }\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}`;
     setQrData(qrContent);
+  };
+
+  const getShareableContent = () => {
+    return `Pay ${formData.amount} ${isAmountInXRP ? "XRP" : selectedFiat} to ${formData.merchantName} using Bitbob`;
   };
 
   return (
@@ -321,9 +334,9 @@ const Index = () => {
                 
                 <SocialShare
                   url="https://bitbob.app"
-                  title={shareableContent}
+                  title={getShareableContent()}
                   emailSubject="Bitbob Payment Request"
-                  emailBody={shareableContent}
+                  emailBody={getShareableContent()}
                 />
               </div>
             </Card>
