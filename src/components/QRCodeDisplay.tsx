@@ -28,17 +28,20 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
       img.onload = () => {
         canvas.width = qrOptions.size;
         canvas.height = qrOptions.size;
-        ctx?.fillStyle = "white";
-        ctx?.fillRect(0, 0, canvas.width, canvas.height);
-        ctx?.drawImage(img, 0, 0);
         
-        const url = canvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        link.download = "bitbob-qr-code.png";
-        link.href = url;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        if (ctx) {
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0);
+          
+          const url = canvas.toDataURL("image/png");
+          const link = document.createElement("a");
+          link.download = "bitbob-qr-code.png";
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       };
       
       img.src = "data:image/svg+xml;base64," + btoa(svgData);
