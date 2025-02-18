@@ -19,7 +19,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe, Store, Package, DollarSign, Wallet } from "lucide-react";
+import { Globe, Store, Package, DollarSign, Wallet, ChevronDown, ChevronUp, Hash } from "lucide-react";
 import { fiatCurrencies } from "@/utils/currencies";
 import { NumericKeypad } from "@/components/NumericKeypad";
 import { QRCodeDisplay } from "@/components/QRCodeDisplay";
@@ -30,6 +30,7 @@ const Index = () => {
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
   const [languages, setLanguages] = useState<string[]>([]);
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
   const [formData, setFormData] = useState({
     merchantName: "",
     productName: "",
@@ -116,29 +117,24 @@ const Index = () => {
       return;
     }
 
-    const qrContent = `Merchant: ${formData.merchantName}\nProduct: ${formData.productName}\nAmount: ${
+    const qrContent = `Merchant: ${formData.merchantName}\nProduct: ${formData.productName}${formData.productId ? '\nProduct ID: ' + formData.productId : ''}\nAmount: ${
       formData.amount
     }\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}`;
     setQrData(qrContent);
   };
 
-  const shareableContent = `Payment Request\n\nQR Code Data:\n${qrData}\n\nFor more information, visit: https://bitbob.app`;
-
-  const changeLanguage = (lng: string) => {
-    i18n.changeLanguage(lng);
-  };
-
-  const getLanguageLabel = (code: string) => {
-    const labels: { [key: string]: string } = {
-      en: "English",
-      es: "Español",
-      de: "Deutsch",
-    };
-    return labels[code] || code;
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
+      <header className="w-full py-4 px-4 bg-white/80 backdrop-blur-sm border-b">
+        <div className="max-w-2xl mx-auto">
+          <img 
+            src="/lovable-uploads/7450c25d-f739-43d4-a8fc-a3ddf2cea909.png" 
+            alt="Bitbob" 
+            className="h-8 w-auto"
+          />
+        </div>
+      </header>
+
       <main className="flex-1 p-4 md:p-8">
         <div className="max-w-2xl mx-auto space-y-8">
           <div className="flex justify-end mb-4">
@@ -165,108 +161,144 @@ const Index = () => {
 
           <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-in">
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="xrpAddress" className="flex items-center gap-2">
-                  <Wallet className="h-4 w-4" />
-                  {t("fields.xrpAddress.label")}
-                </Label>
-                <Input
-                  id="xrpAddress"
-                  name="xrpAddress"
-                  value={formData.xrpAddress}
-                  onChange={handleInputChange}
-                  placeholder={t("fields.xrpAddress.placeholder")}
-                  className="transition-all focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              {/* Required Fields */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="xrpAddress" className="flex items-center gap-2">
+                    <Wallet className="h-4 w-4" />
+                    {t("fields.xrpAddress.label")}
+                  </Label>
+                  <Input
+                    id="xrpAddress"
+                    name="xrpAddress"
+                    value={formData.xrpAddress}
+                    onChange={handleInputChange}
+                    placeholder={t("fields.xrpAddress.placeholder")}
+                    className="transition-all focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="amount" className="flex items-center gap-2">
-                  <DollarSign className="h-4 w-4" />
-                  {t("fields.amount.label")}
-                </Label>
-                <div className="flex items-center space-x-4">
-                  <div className="relative flex-1">
-                    <Input
-                      id="amount"
-                      name="amount"
-                      value={formData.amount}
-                      onChange={handleInputChange}
-                      onFocus={() => setShowNumpad(true)}
-                      placeholder={`${t("fields.amount.placeholder")} ${
-                        isAmountInXRP ? t("currency.xrp") : selectedFiat
-                      }`}
-                      className="transition-all focus:ring-2 focus:ring-blue-500"
-                      readOnly
-                    />
-                    {showNumpad && (
-                      <div className="absolute top-full left-0 z-50 mt-2">
-                        <NumericKeypad 
-                          onKeyPress={handleNumpadClick}
-                          onClose={handleNumpadClose}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      checked={isAmountInXRP}
-                      onCheckedChange={(checked) => {
-                        setIsAmountInXRP(checked);
-                        if (!checked) {
-                          setSelectedFiat("USD");
-                        }
-                      }}
-                    />
-                    {isAmountInXRP ? (
-                      <Label>{t("currency.xrp")}</Label>
-                    ) : (
-                      <Select value={selectedFiat} onValueChange={setSelectedFiat}>
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {fiatCurrencies.map((currency) => (
-                            <SelectItem key={currency.code} value={currency.code}>
-                              {currency.code}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                <div className="space-y-2">
+                  <Label htmlFor="amount" className="flex items-center gap-2">
+                    <DollarSign className="h-4 w-4" />
+                    {t("fields.amount.label")}
+                  </Label>
+                  <div className="flex items-center space-x-4">
+                    <div className="relative flex-1">
+                      <Input
+                        id="amount"
+                        name="amount"
+                        value={formData.amount}
+                        onChange={handleInputChange}
+                        onFocus={() => setShowNumpad(true)}
+                        placeholder={`${t("fields.amount.placeholder")} ${
+                          isAmountInXRP ? t("currency.xrp") : selectedFiat
+                        }`}
+                        className="transition-all focus:ring-2 focus:ring-blue-500"
+                        readOnly
+                      />
+                      {showNumpad && (
+                        <div className="absolute top-full left-0 z-50 mt-2">
+                          <NumericKeypad 
+                            onKeyPress={handleNumpadClick}
+                            onClose={handleNumpadClose}
+                          />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        checked={isAmountInXRP}
+                        onCheckedChange={(checked) => {
+                          setIsAmountInXRP(checked);
+                          if (!checked) {
+                            setSelectedFiat("USD");
+                          }
+                        }}
+                      />
+                      {isAmountInXRP ? (
+                        <Label>{t("currency.xrp")}</Label>
+                      ) : (
+                        <Select value={selectedFiat} onValueChange={setSelectedFiat}>
+                          <SelectTrigger className="w-24">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {fiatCurrencies.map((currency) => (
+                              <SelectItem key={currency.code} value={currency.code}>
+                                {currency.code}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="merchantName" className="flex items-center gap-2">
-                  <Store className="h-4 w-4" />
-                  {t("fields.merchantName.label")}
-                </Label>
-                <Input
-                  id="merchantName"
-                  name="merchantName"
-                  value={formData.merchantName}
-                  onChange={handleInputChange}
-                  placeholder={t("fields.merchantName.placeholder")}
-                  className="transition-all focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              {/* More Options Button */}
+              <Button
+                variant="ghost"
+                onClick={() => setShowOptionalFields(!showOptionalFields)}
+                className="w-full flex items-center justify-center gap-2"
+              >
+                {showOptionalFields ? (
+                  <>Less Options <ChevronUp className="h-4 w-4" /></>
+                ) : (
+                  <>More Options <ChevronDown className="h-4 w-4" /></>
+                )}
+              </Button>
 
-              <div className="space-y-2">
-                <Label htmlFor="productName" className="flex items-center gap-2">
-                  <Package className="h-4 w-4" />
-                  {t("fields.productName.label")}
-                </Label>
-                <Input
-                  id="productName"
-                  name="productName"
-                  value={formData.productName}
-                  onChange={handleInputChange}
-                  placeholder={t("fields.productName.placeholder")}
-                  className="transition-all focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              {/* Optional Fields */}
+              {showOptionalFields && (
+                <div className="space-y-4 animate-accordion-down">
+                  <div className="space-y-2">
+                    <Label htmlFor="merchantName" className="flex items-center gap-2">
+                      <Store className="h-4 w-4" />
+                      {t("fields.merchantName.label")}
+                    </Label>
+                    <Input
+                      id="merchantName"
+                      name="merchantName"
+                      value={formData.merchantName}
+                      onChange={handleInputChange}
+                      placeholder={t("fields.merchantName.placeholder")}
+                      className="transition-all focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="productName" className="flex items-center gap-2">
+                      <Package className="h-4 w-4" />
+                      {t("fields.productName.label")}
+                    </Label>
+                    <Input
+                      id="productName"
+                      name="productName"
+                      value={formData.productName}
+                      onChange={handleInputChange}
+                      placeholder={t("fields.productName.placeholder")}
+                      className="transition-all focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="productId" className="flex items-center gap-2">
+                      <Hash className="h-4 w-4" />
+                      {t("fields.productId.label")}
+                    </Label>
+                    <Input
+                      id="productId"
+                      name="productId"
+                      value={formData.productId}
+                      onChange={handleInputChange}
+                      placeholder={t("fields.productId.placeholder")}
+                      className="transition-all focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              )}
 
               <Button
                 onClick={generateQRCode}
