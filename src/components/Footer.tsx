@@ -1,5 +1,5 @@
 
-import { Youtube, Globe, Linkedin } from "lucide-react";
+import { Youtube, Globe, Linkedin, Twitter } from "lucide-react";
 
 export const Footer = () => {
   return (
@@ -14,7 +14,7 @@ export const Footer = () => {
               className="h-[40px]"
             >
               <img 
-                src="/app-store-badge.png" 
+                src="/lovable-uploads/2882863c-3ee4-471f-9c48-ad87bfdf22b3.png" 
                 alt="Download on the App Store" 
                 className="h-full w-auto"
               />
@@ -26,7 +26,7 @@ export const Footer = () => {
               className="h-[40px]"
             >
               <img 
-                src="/google-play-badge.png" 
+                src="/lovable-uploads/734296e3-fc70-4551-9606-f5131e7be9df.png" 
                 alt="Get it on Google Play" 
                 className="h-full w-auto"
               />
@@ -41,6 +41,24 @@ export const Footer = () => {
               className="text-gray-600 hover:text-gray-900"
             >
               <Globe className="h-6 w-6" />
+            </a>
+            <a 
+              href="https://x.com/BitbobApp" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <Twitter className="h-6 w-6" />
+            </a>
+            <a 
+              href="https://bsky.app/profile/bitbobapp.bsky.social" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-gray-600 hover:text-blue-600"
+            >
+              <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L1 21h22L12 2zm0 4.5l7.5 13H4.5L12 6.5z"/>
+              </svg>
             </a>
             <a 
               href="https://www.youtube.com/@BitbobApp" 

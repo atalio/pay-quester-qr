@@ -30,8 +30,23 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
         canvas.height = qrOptions.size;
         
         if (ctx) {
+          // Draw white background with rounded corners
           ctx.fillStyle = "white";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          const radius = 20;
+          ctx.beginPath();
+          ctx.moveTo(radius, 0);
+          ctx.lineTo(canvas.width - radius, 0);
+          ctx.quadraticCurveTo(canvas.width, 0, canvas.width, radius);
+          ctx.lineTo(canvas.width, canvas.height - radius);
+          ctx.quadraticCurveTo(canvas.width, canvas.height, canvas.width - radius, canvas.height);
+          ctx.lineTo(radius, canvas.height);
+          ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - radius);
+          ctx.lineTo(0, radius);
+          ctx.quadraticCurveTo(0, 0, radius, 0);
+          ctx.closePath();
+          ctx.fill();
+          
+          // Draw QR code
           ctx.drawImage(img, 0, 0);
           
           const url = canvas.toDataURL("image/png");
@@ -64,8 +79,8 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
               src: logo,
               x: undefined,
               y: undefined,
-              height: 48,
-              width: 48,
+              height: 40,
+              width: 40,
               excavate: true,
             } : undefined}
             style={{ width: "100%", height: "auto" }}
@@ -83,6 +98,17 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
           Export PNG
         </Button>
       </div>
+
+      <style>{`
+        .qr-code-container svg {
+          border-radius: 1rem;
+        }
+        .qr-code-container svg path:not(:last-child) {
+          stroke-width: 0;
+          rx: 2;
+          ry: 2;
+        }
+      `}</style>
     </div>
   );
 };
