@@ -1,7 +1,7 @@
 
 import QRCode from "qrcode.react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Download } from "lucide-react";
 
 interface QRCodeDisplayProps {
   value: string;
@@ -9,83 +9,45 @@ interface QRCodeDisplayProps {
 }
 
 export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
-  const [qrOptions, setQrOptions] = useState({
-    size: 200,
+  const qrOptions = {
+    size: 256,
     level: "H" as "L" | "M" | "Q" | "H",
     includeMargin: true,
     color: "#000000",
     backgroundColor: "#ffffff",
-    style: "dots" as "dots" | "squares",
-  });
-
-  const [selectedStyle, setSelectedStyle] = useState<"classic" | "dots" | "rounded">("rounded");
+  };
 
   const exportQRCode = () => {
-    const canvas = document.querySelector("canvas");
-    if (canvas) {
-      const url = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.download = "bitbob-qr-code.png";
-      link.href = url;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    const svg = document.querySelector(".qr-code-container svg");
+    if (svg) {
+      const svgData = new XMLSerializer().serializeToString(svg);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      
+      img.onload = () => {
+        canvas.width = qrOptions.size;
+        canvas.height = qrOptions.size;
+        ctx?.fillStyle = "white";
+        ctx?.fillRect(0, 0, canvas.width, canvas.height);
+        ctx?.drawImage(img, 0, 0);
+        
+        const url = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.download = "bitbob-qr-code.png";
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      };
+      
+      img.src = "data:image/svg+xml;base64," + btoa(svgData);
     }
-  };
-
-  const getQRStyle = () => {
-    switch (selectedStyle) {
-      case "dots":
-        return "circle";
-      case "rounded":
-        return "rounded";
-      default:
-        return "square";
-    }
-  };
-
-  const updateQRStyle = (style: "classic" | "dots" | "rounded") => {
-    setSelectedStyle(style);
-    setQrOptions(prev => ({
-      ...prev,
-      style: style === "classic" ? "squares" : "dots",
-    }));
   };
 
   return (
     <div className="space-y-4">
-      <div className="flex gap-2 justify-center">
-        <Button
-          variant={selectedStyle === "classic" ? "default" : "outline"}
-          size="sm"
-          onClick={() => updateQRStyle("classic")}
-        >
-          Classic
-        </Button>
-        <Button
-          variant={selectedStyle === "dots" ? "default" : "outline"}
-          size="sm"
-          onClick={() => updateQRStyle("dots")}
-        >
-          Dots
-        </Button>
-        <Button
-          variant={selectedStyle === "rounded" ? "default" : "outline"}
-          size="sm"
-          onClick={() => updateQRStyle("rounded")}
-        >
-          Rounded
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={exportQRCode}
-        >
-          Export PNG
-        </Button>
-      </div>
-
-      <div className="flex justify-center">
+      <div className="qr-code-container flex justify-center">
         <div className="relative p-4 bg-white rounded-2xl shadow-sm">
           <QRCode
             value={value}
@@ -99,30 +61,25 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
               src: logo,
               x: undefined,
               y: undefined,
-              height: 40,
-              width: 40,
+              height: 48,
+              width: 48,
               excavate: true,
             } : undefined}
             style={{ width: "100%", height: "auto" }}
-            className={`qr-code-${selectedStyle}`}
           />
         </div>
       </div>
-
-      <style>
-        {`
-          .qr-code-dots path:not(:last-child) {
-            stroke-width: 0;
-            rx: 50;
-            ry: 50;
-          }
-          .qr-code-rounded path:not(:last-child) {
-            stroke-width: 0;
-            rx: 8;
-            ry: 8;
-          }
-        `}
-      </style>
+      
+      <div className="flex justify-center">
+        <Button
+          variant="outline"
+          onClick={exportQRCode}
+          className="gap-2"
+        >
+          <Download className="h-4 w-4" />
+          Export PNG
+        </Button>
+      </div>
     </div>
   );
 };
