@@ -1,6 +1,11 @@
 
 import { useEffect, useRef } from "react";
-import QRCodeStyling, { CornerDotType, CornerSquareType, DotType } from "qr-code-styling";
+import QRCodeStyling, { 
+  CornerDotType, 
+  CornerSquareType, 
+  DotType, 
+  GradientType 
+} from "qr-code-styling";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
@@ -20,7 +25,7 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
             type: "dots" as DotType,
             color: "#9b87f5",
             gradient: {
-              type: "linear",
+              type: "linear" as GradientType,
               rotation: 45,
               colorStops: [
                 { offset: 0, color: "#9b87f5" },
@@ -42,7 +47,7 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
           dotsOptions: {
             type: "dots" as DotType,
             gradient: {
-              type: "linear",
+              type: "linear" as GradientType,
               rotation: 90,
               colorStops: [
                 { offset: 0, color: "#F97316" },
@@ -64,7 +69,7 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
           dotsOptions: {
             type: "dots" as DotType,
             gradient: {
-              type: "linear",
+              type: "linear" as GradientType,
               rotation: 60,
               colorStops: [
                 { offset: 0, color: "#0EA5E9" },
@@ -86,7 +91,7 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
           dotsOptions: {
             type: "dots" as DotType,
             gradient: {
-              type: "linear",
+              type: "linear" as GradientType,
               rotation: 30,
               colorStops: [
                 { offset: 0, color: "#059669" },
@@ -108,7 +113,7 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
           dotsOptions: {
             type: "dots" as DotType,
             gradient: {
-              type: "linear",
+              type: "linear" as GradientType,
               rotation: 120,
               colorStops: [
                 { offset: 0, color: "#ea384c" },
@@ -130,7 +135,7 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
           dotsOptions: {
             type: "dots" as DotType,
             gradient: {
-              type: "linear",
+              type: "linear" as GradientType,
               rotation: 45,
               colorStops: [
                 { offset: 0, color: "#3b82f6" },
