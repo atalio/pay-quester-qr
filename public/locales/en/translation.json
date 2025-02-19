@@ -18,6 +18,10 @@
     "productName": {
       "label": "Product Name (Optional)",
       "placeholder": "Enter product name"
+    },
+    "productId": {
+      "label": "Product ID (Optional)",
+      "placeholder": "Enter product ID"
     }
   },
   "currency": {

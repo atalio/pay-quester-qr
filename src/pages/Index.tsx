@@ -126,12 +126,13 @@ const Index = () => {
       return;
     }
 
-    const qrContent = `Merchant: ${formData.merchantName}\nProduct: ${formData.productName}\nAmount: ${formData.amount}\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}`;
+    const qrContent = `Merchant: ${formData.merchantName || ""}\nProduct: ${formData.productName || ""}\nProduct ID: ${formData.productId || ""}\nAmount: ${formData.amount}\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}`;
     setQrData(qrContent);
   };
 
   const getShareableContent = () => {
-    return `Pay ${formData.amount} ${isAmountInXRP ? "XRP" : selectedFiat} to ${formData.merchantName || "merchant"} using Bitbob`;
+    const currency = isAmountInXRP ? "XRP" : selectedFiat;
+    return `${formData.merchantName || ""} ${formData.productName || ""} ${currency} ${formData.amount}`;
   };
 
   return (

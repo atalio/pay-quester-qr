@@ -1,9 +1,8 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ModernDotsQR } from "./qr-styles/ModernDotsQR";
 import { GradientQR } from "./qr-styles/GradientQR";
 import { RoundedQR } from "./qr-styles/RoundedQR";
-import { Button } from "@/components/ui/button";
 import { 
   Select,
   SelectContent,
@@ -18,27 +17,39 @@ interface QRCodeDisplayProps {
 
 export const QRCodeDisplay = ({ value }: QRCodeDisplayProps) => {
   const [selectedStyle, setSelectedStyle] = useState<string>("modern-default");
+  const [key, setKey] = useState(0);
+
+  // Refresh QR code when value changes
+  useEffect(() => {
+    setKey(prev => prev + 1);
+  }, [value]);
 
   const renderQRCode = () => {
     switch (selectedStyle) {
       case "modern-default":
-        return <ModernDotsQR value={value} variant="default" />;
+        return <ModernDotsQR key={key} value={value} variant="default" />;
       case "modern-purple":
-        return <ModernDotsQR value={value} variant="purple" />;
+        return <ModernDotsQR key={key} value={value} variant="purple" />;
       case "modern-sunset":
-        return <ModernDotsQR value={value} variant="sunset" />;
+        return <ModernDotsQR key={key} value={value} variant="sunset" />;
       case "modern-ocean":
-        return <ModernDotsQR value={value} variant="ocean" />;
+        return <ModernDotsQR key={key} value={value} variant="ocean" />;
       case "modern-forest":
-        return <ModernDotsQR value={value} variant="forest" />;
+        return <ModernDotsQR key={key} value={value} variant="forest" />;
       case "modern-crimson":
-        return <ModernDotsQR value={value} variant="crimson" />;
-      case "gradient":
-        return <GradientQR value={value} />;
-      case "rounded":
-        return <RoundedQR value={value} />;
+        return <ModernDotsQR key={key} value={value} variant="crimson" />;
+      case "modern-midnight":
+        return <ModernDotsQR key={key} value={value} variant="midnight" />;
+      case "modern-cosmic":
+        return <ModernDotsQR key={key} value={value} variant="cosmic" />;
+      case "modern-rainbow":
+        return <ModernDotsQR key={key} value={value} variant="rainbow" />;
+      case "modern-emerald":
+        return <ModernDotsQR key={key} value={value} variant="emerald" />;
+      case "modern-golden":
+        return <ModernDotsQR key={key} value={value} variant="golden" />;
       default:
-        return <ModernDotsQR value={value} variant="default" />;
+        return <ModernDotsQR key={key} value={value} variant="default" />;
     }
   };
 
@@ -59,8 +70,11 @@ export const QRCodeDisplay = ({ value }: QRCodeDisplayProps) => {
             <SelectItem value="modern-ocean">Modern Dots - Ocean</SelectItem>
             <SelectItem value="modern-forest">Modern Dots - Forest</SelectItem>
             <SelectItem value="modern-crimson">Modern Dots - Crimson</SelectItem>
-            <SelectItem value="gradient">Gradient</SelectItem>
-            <SelectItem value="rounded">Rounded</SelectItem>
+            <SelectItem value="modern-midnight">Modern Dots - Midnight</SelectItem>
+            <SelectItem value="modern-cosmic">Modern Dots - Cosmic</SelectItem>
+            <SelectItem value="modern-rainbow">Modern Dots - Rainbow</SelectItem>
+            <SelectItem value="modern-emerald">Modern Dots - Emerald</SelectItem>
+            <SelectItem value="modern-golden">Modern Dots - Golden</SelectItem>
           </SelectContent>
         </Select>
       </div>

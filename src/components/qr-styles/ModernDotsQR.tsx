@@ -1,4 +1,3 @@
-
 import { useEffect, useRef } from "react";
 import QRCodeStyling, { 
   CornerDotType, 
@@ -11,7 +10,9 @@ import { Download } from "lucide-react";
 
 interface ModernDotsQRProps {
   value: string;
-  variant?: "default" | "purple" | "sunset" | "ocean" | "forest" | "crimson";
+  variant?: "default" | "purple" | "sunset" | "ocean" | "forest" | "crimson" | 
+           "midnight" | "cosmic" | "rainbow" | "emerald" | "golden" | "cherry" |
+           "neon" | "pastel" | "royal";
 }
 
 export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) => {
@@ -128,6 +129,117 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
           cornersDotOptions: {
             type: "dot" as CornerDotType,
             color: "#ea384c"
+          }
+        };
+      case "midnight":
+        return {
+          dotsOptions: {
+            type: "dots" as DotType,
+            gradient: {
+              type: "linear" as GradientType,
+              rotation: 135,
+              colorStops: [
+                { offset: 0, color: "#20124d" },
+                { offset: 1, color: "#4a148c" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded" as CornerSquareType,
+            color: "#20124d"
+          },
+          cornersDotOptions: {
+            type: "dot" as CornerDotType,
+            color: "#4a148c"
+          }
+        };
+      case "cosmic":
+        return {
+          dotsOptions: {
+            type: "dots" as DotType,
+            gradient: {
+              type: "linear" as GradientType,
+              rotation: 180,
+              colorStops: [
+                { offset: 0, color: "#6b3fa0" },
+                { offset: 1, color: "#b39ddb" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded" as CornerSquareType,
+            color: "#6b3fa0"
+          },
+          cornersDotOptions: {
+            type: "dot" as CornerDotType,
+            color: "#b39ddb"
+          }
+        };
+      case "rainbow":
+        return {
+          dotsOptions: {
+            type: "dots" as DotType,
+            gradient: {
+              type: "linear" as GradientType,
+              rotation: 45,
+              colorStops: [
+                { offset: 0, color: "#ff6b6b" },
+                { offset: 0.5, color: "#4ecdc4" },
+                { offset: 1, color: "#45b7d1" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded" as CornerSquareType,
+            color: "#ff6b6b"
+          },
+          cornersDotOptions: {
+            type: "dot" as CornerDotType,
+            color: "#45b7d1"
+          }
+        };
+      case "emerald":
+        return {
+          dotsOptions: {
+            type: "dots" as DotType,
+            gradient: {
+              type: "linear" as GradientType,
+              rotation: 90,
+              colorStops: [
+                { offset: 0, color: "#2ecc71" },
+                { offset: 1, color: "#27ae60" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded" as CornerSquareType,
+            color: "#27ae60"
+          },
+          cornersDotOptions: {
+            type: "dot" as CornerDotType,
+            color: "#2ecc71"
+          }
+        };
+      case "golden":
+        return {
+          dotsOptions: {
+            type: "dots" as DotType,
+            gradient: {
+              type: "linear" as GradientType,
+              rotation: 135,
+              colorStops: [
+                { offset: 0, color: "#f1c40f" },
+                { offset: 1, color: "#f39c12" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded" as CornerSquareType,
+            color: "#f39c12"
+          },
+          cornersDotOptions: {
+            type: "dot" as CornerDotType,
+            color: "#f1c40f"
           }
         };
       default:
