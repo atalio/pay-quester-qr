@@ -45,8 +45,18 @@ const Index = () => {
   const numpadTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    setLanguages(["en", "es", "de"]);
+    setLanguages([
+      "af", "sq", "am", "ar", "hy", "as", "az", "bn", "ba", "eu", "bs", "bg", "yue", "ca", "lzh",
+      "zh-Hans", "zh-Hant", "hr", "cs", "da", "prs", "dv", "nl", "en", "et", "fo", "fj", "fil", "fi",
+      "fr", "fr-CA", "gl", "ka", "de", "el", "gu", "ht", "he", "hi", "mww", "hu", "is", "id", "ikt",
+      "iu", "iu-Latn", "ga", "it", "ja", "kn", "kk", "km", "tlh-Latn", "ko", "ku", "kmr", "ky", "lo",
+      "lv", "lt", "mk", "mg", "ms", "ml", "mt", "mr", "mn-Cyrl", "mn-Mong", "my", "mi", "ne", "nb",
+      "or", "ps", "fa", "pl", "pt", "pt-PT", "pa", "otq", "ro", "ru", "sm", "sr-Cyrl", "sr-Latn", "sk",
+      "sl", "so", "es", "sw", "sv", "ty", "ta", "tt", "te", "th", "bo", "ti", "to", "tr", "tk", "uk",
+      "hsb", "ur", "ug", "uz", "vi", "cy", "yua", "zu",
+    ]);
   }, []);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -371,12 +381,12 @@ const Index = () => {
                   <Globe className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {languages.map((lng) => (
-                  <DropdownMenuItem key={lng} onClick={() => changeLanguage(lng)}>
-                    {getLanguageLabel(lng)}
-                  </DropdownMenuItem>
-                ))}
+              <DropdownMenuContent className="max-h-[800px] overflow-y-auto text-sm">
+              {languages.map((lng) => (
+               <DropdownMenuItem key={lng} onClick={() => changeLanguage(lng)}>
+               {getLanguageLabel(lng)}
+               </DropdownMenuItem>
+              ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
