@@ -1,6 +1,6 @@
 
 import { useEffect, useRef } from "react";
-import QRCodeStyling from "qr-code-styling";
+import QRCodeStyling, { CornerDotType, CornerSquareType, DotType } from "qr-code-styling";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 
@@ -17,7 +17,7 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
       case "purple":
         return {
           dotsOptions: {
-            type: "dots",
+            type: "dots" as DotType,
             color: "#9b87f5",
             gradient: {
               type: "linear",
@@ -29,18 +29,18 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
             }
           },
           cornersSquareOptions: {
-            type: "extra-rounded",
+            type: "extra-rounded" as CornerSquareType,
             color: "#6E59A5"
           },
           cornersDotOptions: {
-            type: "dot",
+            type: "dot" as CornerDotType,
             color: "#6E59A5"
           }
         };
       case "sunset":
         return {
           dotsOptions: {
-            type: "dots",
+            type: "dots" as DotType,
             gradient: {
               type: "linear",
               rotation: 90,
@@ -51,18 +51,18 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
             }
           },
           cornersSquareOptions: {
-            type: "extra-rounded",
+            type: "extra-rounded" as CornerSquareType,
             color: "#D946EF"
           },
           cornersDotOptions: {
-            type: "dot",
+            type: "dot" as CornerDotType,
             color: "#F97316"
           }
         };
       case "ocean":
         return {
           dotsOptions: {
-            type: "dots",
+            type: "dots" as DotType,
             gradient: {
               type: "linear",
               rotation: 60,
@@ -73,18 +73,18 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
             }
           },
           cornersSquareOptions: {
-            type: "extra-rounded",
+            type: "extra-rounded" as CornerSquareType,
             color: "#0EA5E9"
           },
           cornersDotOptions: {
-            type: "dot",
+            type: "dot" as CornerDotType,
             color: "#33C3F0"
           }
         };
       case "forest":
         return {
           dotsOptions: {
-            type: "dots",
+            type: "dots" as DotType,
             gradient: {
               type: "linear",
               rotation: 30,
@@ -95,18 +95,18 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
             }
           },
           cornersSquareOptions: {
-            type: "extra-rounded",
+            type: "extra-rounded" as CornerSquareType,
             color: "#059669"
           },
           cornersDotOptions: {
-            type: "dot",
+            type: "dot" as CornerDotType,
             color: "#10B981"
           }
         };
       case "crimson":
         return {
           dotsOptions: {
-            type: "dots",
+            type: "dots" as DotType,
             gradient: {
               type: "linear",
               rotation: 120,
@@ -117,18 +117,18 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
             }
           },
           cornersSquareOptions: {
-            type: "extra-rounded",
+            type: "extra-rounded" as CornerSquareType,
             color: "#dc2626"
           },
           cornersDotOptions: {
-            type: "dot",
+            type: "dot" as CornerDotType,
             color: "#ea384c"
           }
         };
       default:
         return {
           dotsOptions: {
-            type: "dots",
+            type: "dots" as DotType,
             gradient: {
               type: "linear",
               rotation: 45,
@@ -139,11 +139,11 @@ export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) 
             }
           },
           cornersSquareOptions: {
-            type: "extra-rounded",
+            type: "extra-rounded" as CornerSquareType,
             color: "#1d4ed8"
           },
           cornersDotOptions: {
-            type: "dot",
+            type: "dot" as CornerDotType,
             color: "#1d4ed8"
           }
         };

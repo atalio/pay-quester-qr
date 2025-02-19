@@ -126,9 +126,7 @@ const Index = () => {
       return;
     }
 
-    const qrContent = `Merchant: ${formData.merchantName}\nProduct: ${formData.productName}${formData.productId ? '\nProduct ID: ' + formData.productId : ''}\nAmount: ${
-      formData.amount
-    }\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}`;
+    const qrContent = `Amount: ${formData.amount}\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}${formData.merchantName ? '\nMerchant: ' + formData.merchantName : ''}${formData.productName ? '\nProduct: ' + formData.productName : ''}${formData.productId ? '\nProduct ID: ' + formData.productId : ''}`;
     setQrData(qrContent);
   };
 
@@ -174,23 +172,7 @@ const Index = () => {
 
           <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-in">
             <div className="space-y-4">
-              {/* Required Fields */}
               <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="xrpAddress" className="flex items-center gap-2">
-                    <Wallet className="h-4 w-4" />
-                    {t("fields.xrpAddress.label")}
-                  </Label>
-                  <Input
-                    id="xrpAddress"
-                    name="xrpAddress"
-                    value={formData.xrpAddress}
-                    onChange={handleInputChange}
-                    placeholder={t("fields.xrpAddress.placeholder")}
-                    className="transition-all focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-
                 <div className="space-y-2">
                   <Label htmlFor="amount" className="flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
@@ -248,9 +230,23 @@ const Index = () => {
                     </div>
                   </div>
                 </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="xrpAddress" className="flex items-center gap-2">
+                    <Wallet className="h-4 w-4" />
+                    {t("fields.xrpAddress.label")}
+                  </Label>
+                  <Input
+                    id="xrpAddress"
+                    name="xrpAddress"
+                    value={formData.xrpAddress}
+                    onChange={handleInputChange}
+                    placeholder={t("fields.xrpAddress.placeholder")}
+                    className="transition-all focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
 
-              {/* More Options Button */}
               <Button
                 variant="ghost"
                 onClick={() => setShowOptionalFields(!showOptionalFields)}
@@ -263,7 +259,6 @@ const Index = () => {
                 )}
               </Button>
 
-              {/* Optional Fields */}
               {showOptionalFields && (
                 <div className="space-y-4 animate-accordion-down">
                   <div className="space-y-2">
@@ -325,13 +320,8 @@ const Index = () => {
           {qrData && (
             <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-up">
               <div className="text-center space-y-4">
-                <QRCodeDisplay
-                  value={qrData}
-                  logo="/lovable-uploads/04f01451-2fee-4a5b-87b8-4d15deb89578.png"
-                />
-                
+                <QRCodeDisplay value={qrData} />
                 <p className="text-gray-600 whitespace-pre-line text-sm">{qrData}</p>
-                
                 <SocialShare
                   url="https://bitbob.app"
                   title={getShareableContent()}
