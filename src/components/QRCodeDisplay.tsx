@@ -14,22 +14,31 @@ import {
 
 interface QRCodeDisplayProps {
   value: string;
-  logo?: string;
 }
 
-export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
-  const [selectedStyle, setSelectedStyle] = useState<string>("modern");
+export const QRCodeDisplay = ({ value }: QRCodeDisplayProps) => {
+  const [selectedStyle, setSelectedStyle] = useState<string>("modern-default");
 
   const renderQRCode = () => {
     switch (selectedStyle) {
-      case "modern":
-        return <ModernDotsQR value={value} logo={logo} />;
+      case "modern-default":
+        return <ModernDotsQR value={value} variant="default" />;
+      case "modern-purple":
+        return <ModernDotsQR value={value} variant="purple" />;
+      case "modern-sunset":
+        return <ModernDotsQR value={value} variant="sunset" />;
+      case "modern-ocean":
+        return <ModernDotsQR value={value} variant="ocean" />;
+      case "modern-forest":
+        return <ModernDotsQR value={value} variant="forest" />;
+      case "modern-crimson":
+        return <ModernDotsQR value={value} variant="crimson" />;
       case "gradient":
-        return <GradientQR value={value} logo={logo} />;
+        return <GradientQR value={value} />;
       case "rounded":
-        return <RoundedQR value={value} logo={logo} />;
+        return <RoundedQR value={value} />;
       default:
-        return <ModernDotsQR value={value} logo={logo} />;
+        return <ModernDotsQR value={value} variant="default" />;
     }
   };
 
@@ -44,7 +53,12 @@ export const QRCodeDisplay = ({ value, logo }: QRCodeDisplayProps) => {
             <SelectValue placeholder="Select style" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="modern">Modern Dots</SelectItem>
+            <SelectItem value="modern-default">Modern Dots - Classic</SelectItem>
+            <SelectItem value="modern-purple">Modern Dots - Purple</SelectItem>
+            <SelectItem value="modern-sunset">Modern Dots - Sunset</SelectItem>
+            <SelectItem value="modern-ocean">Modern Dots - Ocean</SelectItem>
+            <SelectItem value="modern-forest">Modern Dots - Forest</SelectItem>
+            <SelectItem value="modern-crimson">Modern Dots - Crimson</SelectItem>
             <SelectItem value="gradient">Gradient</SelectItem>
             <SelectItem value="rounded">Rounded</SelectItem>
           </SelectContent>

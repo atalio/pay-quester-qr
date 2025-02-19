@@ -6,12 +6,152 @@ import { Download } from "lucide-react";
 
 interface ModernDotsQRProps {
   value: string;
-  logo?: string;
+  variant?: "default" | "purple" | "sunset" | "ocean" | "forest" | "crimson";
 }
 
-export const ModernDotsQR = ({ value, logo }: ModernDotsQRProps) => {
+export const ModernDotsQR = ({ value, variant = "default" }: ModernDotsQRProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
+  const getStyleConfig = (variant: string) => {
+    switch (variant) {
+      case "purple":
+        return {
+          dotsOptions: {
+            type: "dots",
+            color: "#9b87f5",
+            gradient: {
+              type: "linear",
+              rotation: 45,
+              colorStops: [
+                { offset: 0, color: "#9b87f5" },
+                { offset: 1, color: "#7E69AB" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded",
+            color: "#6E59A5"
+          },
+          cornersDotOptions: {
+            type: "dot",
+            color: "#6E59A5"
+          }
+        };
+      case "sunset":
+        return {
+          dotsOptions: {
+            type: "dots",
+            gradient: {
+              type: "linear",
+              rotation: 90,
+              colorStops: [
+                { offset: 0, color: "#F97316" },
+                { offset: 1, color: "#D946EF" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded",
+            color: "#D946EF"
+          },
+          cornersDotOptions: {
+            type: "dot",
+            color: "#F97316"
+          }
+        };
+      case "ocean":
+        return {
+          dotsOptions: {
+            type: "dots",
+            gradient: {
+              type: "linear",
+              rotation: 60,
+              colorStops: [
+                { offset: 0, color: "#0EA5E9" },
+                { offset: 1, color: "#33C3F0" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded",
+            color: "#0EA5E9"
+          },
+          cornersDotOptions: {
+            type: "dot",
+            color: "#33C3F0"
+          }
+        };
+      case "forest":
+        return {
+          dotsOptions: {
+            type: "dots",
+            gradient: {
+              type: "linear",
+              rotation: 30,
+              colorStops: [
+                { offset: 0, color: "#059669" },
+                { offset: 1, color: "#10B981" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded",
+            color: "#059669"
+          },
+          cornersDotOptions: {
+            type: "dot",
+            color: "#10B981"
+          }
+        };
+      case "crimson":
+        return {
+          dotsOptions: {
+            type: "dots",
+            gradient: {
+              type: "linear",
+              rotation: 120,
+              colorStops: [
+                { offset: 0, color: "#ea384c" },
+                { offset: 1, color: "#dc2626" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded",
+            color: "#dc2626"
+          },
+          cornersDotOptions: {
+            type: "dot",
+            color: "#ea384c"
+          }
+        };
+      default:
+        return {
+          dotsOptions: {
+            type: "dots",
+            gradient: {
+              type: "linear",
+              rotation: 45,
+              colorStops: [
+                { offset: 0, color: "#3b82f6" },
+                { offset: 1, color: "#1d4ed8" }
+              ]
+            }
+          },
+          cornersSquareOptions: {
+            type: "extra-rounded",
+            color: "#1d4ed8"
+          },
+          cornersDotOptions: {
+            type: "dot",
+            color: "#1d4ed8"
+          }
+        };
+    }
+  };
+
+  const styleConfig = getStyleConfig(variant);
+  
   const qrCode = new QRCodeStyling({
     width: 256,
     height: 256,
@@ -22,42 +162,20 @@ export const ModernDotsQR = ({ value, logo }: ModernDotsQRProps) => {
       mode: "Byte",
       errorCorrectionLevel: "H"
     },
-    imageOptions: {
-      hideBackgroundDots: true,
-      imageSize: 0.4,
-      margin: 0
-    },
-    dotsOptions: {
-      type: "dots",
-      color: "#000000",
-      gradient: {
-        type: "linear",
-        rotation: 45,
-        colorStops: [
-          { offset: 0, color: "#3b82f6" },
-          { offset: 1, color: "#1d4ed8" }
-        ]
-      }
-    },
+    dotsOptions: styleConfig.dotsOptions,
     backgroundOptions: {
       color: "#ffffff",
     },
-    cornersSquareOptions: {
-      type: "extra-rounded",
-      color: "#1d4ed8"
-    },
-    cornersDotOptions: {
-      type: "dot",
-      color: "#1d4ed8"
-    },
-    image: logo
+    cornersSquareOptions: styleConfig.cornersSquareOptions,
+    cornersDotOptions: styleConfig.cornersDotOptions,
   });
 
   useEffect(() => {
     if (ref.current) {
+      ref.current.innerHTML = '';
       qrCode.append(ref.current);
     }
-  }, []);
+  }, [variant]);
 
   useEffect(() => {
     qrCode.update({
@@ -68,7 +186,7 @@ export const ModernDotsQR = ({ value, logo }: ModernDotsQRProps) => {
   const handleDownload = () => {
     qrCode.download({
       extension: "png",
-      name: "bitbob-qr-modern"
+      name: `bitbob-qr-${variant}`
     });
   };
 
