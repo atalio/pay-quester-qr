@@ -113,7 +113,7 @@ const Index = () => {
     i18n.changeLanguage(lng);
   };
 
-  const getLanguageLabel = (lng: string): string => {
+const getLanguageLabel = (lng: string): string => {
     switch (lng) {
       case "af":
         return "Afrikaans";
@@ -339,7 +339,10 @@ const Index = () => {
         return lng;
     }
 };
+<<<<<<< HEAD
 
+=======
+>>>>>>> f59fc94a5515f3081ee3eaab859563e84611ec6d
 
   const generateQRCode = () => {
     if (!formData.amount || !formData.xrpAddress) {
