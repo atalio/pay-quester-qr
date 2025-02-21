@@ -1,1 +1,56 @@
-{"title":"Bitbob-Zahlungsaufforderung","subtitle":"Generieren eines QR-Codes für Zahlungsaufforderungen","fields":{"xrpAddress":{"label":"XRP-Adresse (erforderlich)","placeholder":"Geben Sie Ihre XRP-Adresse ein"},"amount":{"label":"Betrag (erforderlich)","placeholder":"Betrag in"},"merchantName":{"label":"Name des Händlers (optional)","placeholder":"Geben Sie den Namen des Händlers ein"},"productName":{"label":"Produktname (optional)","placeholder":"Geben Sie den Produktnamen ein"},"productId":{"label":"Produkt-ID (optional)","placeholder":"Produkt-ID eingeben"}},"currency":{"xrp":"XRP (Englisch)","usd":"USD"},"buttons":{"generate":"QR-Code generieren"},"qrCode":{"title":"Zahlungsaufforderung - Scan me with Bitbob App"},"errors":{"requiredFields":{"title":"Erforderliche Felder fehlen","description":"Bitte füllen Sie alle erforderlichen Felder aus."}}}
+
+{
+  "title": "Bitbob-Zahlungsaufforderung",
+  "subtitle": "Generieren eines QR-Codes für Zahlungsaufforderungen",
+  "fields": {
+    "xrpAddress": {
+      "label": "XRP-Adresse (erforderlich)",
+      "placeholder": "Geben Sie Ihre XRP-Adresse ein"
+    },
+    "amount": {
+      "label": "Betrag (erforderlich)",
+      "placeholder": "Betrag in"
+    },
+    "merchantName": {
+      "label": "Name des Händlers (optional)",
+      "placeholder": "Geben Sie den Namen des Händlers ein"
+    },
+    "productName": {
+      "label": "Produktname (optional)",
+      "placeholder": "Geben Sie den Produktnamen ein"
+    },
+    "productId": {
+      "label": "Produkt-ID (optional)",
+      "placeholder": "Produkt-ID eingeben"
+    }
+  },
+  "currency": {
+    "xrp": "XRP",
+    "usd": "USD"
+  },
+  "buttons": {
+    "generate": "QR-Code generieren",
+    "exportPng": "Als PNG exportieren"
+  },
+  "qrCode": {
+    "title": "Zahlungsaufforderung - Scannen Sie mit der Bitbob App",
+    "logoUpload": {
+      "label": "Logo-Bild ({{width}}x{{height}}px)",
+      "help": "Logo wird auf {{width}}x{{height}}px Bereich angepasst"
+    }
+  },
+  "toasts": {
+    "logoUpload": {
+      "success": "Logo erfolgreich hochgeladen",
+      "resized": "Logo auf {{width}}x{{height}} Pixel angepasst",
+      "error": "Fehler beim Hochladen des Logos",
+      "tryAgain": "Bitte versuchen Sie es mit einem anderen Bild"
+    }
+  },
+  "errors": {
+    "requiredFields": {
+      "title": "Erforderliche Felder fehlen",
+      "description": "Bitte füllen Sie alle erforderlichen Felder aus."
+    }
+  }
+}

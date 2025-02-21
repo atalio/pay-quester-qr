@@ -6,20 +6,22 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface CustomLogoQRProps {
   value: string;
 }
 
 const MAX_LOGO_SIZE = {
-  width: 64,
-  height: 64,
+  width: 70,
+  height: 70,
 };
 
 export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
   const [customLogo, setCustomLogo] = useState<string>("/lovable-uploads/7450c25d-f739-43d4-a8fc-a3ddf2cea909.png");
   const qrRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  const { t } = useTranslation();
   
   const validateAndResizeImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -75,14 +77,14 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
       setCustomLogo(resizedLogo);
       console.debug("[UI] Custom logo uploaded and resized");
       toast({
-        title: "Logo uploaded successfully",
-        description: `Logo resized to ${MAX_LOGO_SIZE.width}x${MAX_LOGO_SIZE.height} pixels`,
+        title: t('toasts.logoUpload.success'),
+        description: t('toasts.logoUpload.resized', { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height }),
       });
     } catch (error) {
       console.error("[UI] Error processing logo:", error);
       toast({
-        title: "Error uploading logo",
-        description: "Please try again with a different image",
+        title: t('toasts.logoUpload.error'),
+        description: t('toasts.logoUpload.tryAgain'),
         variant: "destructive",
       });
     }
@@ -122,7 +124,7 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
       </div>
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="logo-upload">Logo Image ({MAX_LOGO_SIZE.width}x{MAX_LOGO_SIZE.height}px)</Label>
+          <Label htmlFor="logo-upload">{t('qrCode.logoUpload.label', { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height })}</Label>
           <Input
             id="logo-upload"
             type="file"
@@ -131,13 +133,13 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
             className="cursor-pointer"
           />
           <p className="text-xs text-muted-foreground">
-            Logo will be resized to fit in a {MAX_LOGO_SIZE.width}x{MAX_LOGO_SIZE.height}px area
+            {t('qrCode.logoUpload.help', { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height })}
           </p>
         </div>
         <div className="flex justify-center">
           <Button variant="outline" onClick={handleDownload} className="gap-2">
             <Download className="h-4 w-4" />
-            Export PNG
+            {t('buttons.exportPng')}
           </Button>
         </div>
       </div>
