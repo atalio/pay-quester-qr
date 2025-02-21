@@ -5,7 +5,9 @@
   "fields": {
     "xrpAddress": {
       "label": "XRP Address (Required)",
-      "placeholder": "Enter your XRP address"
+      "placeholder": "Enter your XRP address",
+      "example": "Example",
+      "apply": "Apply"
     },
     "amount": {
       "label": "Amount (Required)",
@@ -30,7 +32,8 @@
   },
   "buttons": {
     "generate": "Generate QR Code",
-    "exportPng": "Export PNG"
+    "exportPng": "Export PNG",
+    "moreOptions": "More Options"
   },
   "qrCode": {
     "title": "Payment Request - Scan me with Bitbob App",
@@ -54,3 +57,4 @@
     }
   }
 }
+

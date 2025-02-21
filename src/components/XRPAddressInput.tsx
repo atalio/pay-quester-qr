@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Wallet } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface XRPAddressInputProps {
   value: string;
@@ -18,6 +19,7 @@ export const XRPAddressInput = ({
   label,
   placeholder,
 }: XRPAddressInputProps) => {
+  const { t } = useTranslation();
   const exampleAddress = "rHNTXD6a7VfFzQK9bNMkX4kYD8nLjhgb32";
 
   const handleApplyExample = () => {
@@ -40,14 +42,14 @@ export const XRPAddressInput = ({
         className="transition-all focus:ring-2 focus:ring-blue-500"
       />
       <div className="flex items-center gap-2">
-        <span className="text-xs text-gray-500">Example: {exampleAddress}</span>
+        <span className="text-xs text-gray-500">{t('fields.xrpAddress.example')}: {exampleAddress}</span>
         <Button
           variant="ghost"
           size="sm"
           className="h-6 text-xs"
           onClick={handleApplyExample}
         >
-          Apply
+          {t('fields.xrpAddress.apply')}
         </Button>
       </div>
     </div>

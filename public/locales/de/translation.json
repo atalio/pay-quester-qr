@@ -5,7 +5,9 @@
   "fields": {
     "xrpAddress": {
       "label": "XRP-Adresse (erforderlich)",
-      "placeholder": "Geben Sie Ihre XRP-Adresse ein"
+      "placeholder": "Geben Sie Ihre XRP-Adresse ein",
+      "example": "Beispiel",
+      "apply": "Anwenden"
     },
     "amount": {
       "label": "Betrag (erforderlich)",
@@ -30,7 +32,8 @@
   },
   "buttons": {
     "generate": "QR-Code generieren",
-    "exportPng": "Als PNG exportieren"
+    "exportPng": "Als PNG exportieren",
+    "moreOptions": "Weitere Optionen"
   },
   "qrCode": {
     "title": "Zahlungsaufforderung - Scannen Sie mit der Bitbob App",
@@ -54,3 +57,4 @@
     }
   }
 }
+
