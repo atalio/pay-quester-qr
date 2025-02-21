@@ -64,17 +64,17 @@ export const QRCodeDisplay = ({ value }: QRCodeDisplayProps) => {
             <SelectValue placeholder="Select style" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="modern-default">Modern Dots - Classic</SelectItem>
-            <SelectItem value="modern-purple">Modern Dots - Purple</SelectItem>
-            <SelectItem value="modern-sunset">Modern Dots - Sunset</SelectItem>
-            <SelectItem value="modern-ocean">Modern Dots - Ocean</SelectItem>
-            <SelectItem value="modern-forest">Modern Dots - Forest</SelectItem>
-            <SelectItem value="modern-crimson">Modern Dots - Crimson</SelectItem>
-            <SelectItem value="modern-midnight">Modern Dots - Midnight</SelectItem>
-            <SelectItem value="modern-cosmic">Modern Dots - Cosmic</SelectItem>
-            <SelectItem value="modern-rainbow">Modern Dots - Rainbow</SelectItem>
-            <SelectItem value="modern-emerald">Modern Dots - Emerald</SelectItem>
-            <SelectItem value="modern-golden">Modern Dots - Golden</SelectItem>
+            <SelectItem value="modern-default">Classic</SelectItem>
+            <SelectItem value="modern-purple">Purple</SelectItem>
+            <SelectItem value="modern-sunset">Sunset</SelectItem>
+            <SelectItem value="modern-ocean">Ocean</SelectItem>
+            <SelectItem value="modern-forest">Forest</SelectItem>
+            <SelectItem value="modern-crimson">Crimson</SelectItem>
+            <SelectItem value="modern-midnight">Midnight</SelectItem>
+            <SelectItem value="modern-cosmic">Cosmic</SelectItem>
+            <SelectItem value="modern-rainbow">Rainbow</SelectItem>
+            <SelectItem value="modern-emerald">Emerald</SelectItem>
+            <SelectItem value="modern-golden">Golden</SelectItem>
           </SelectContent>
         </Select>
       </div>

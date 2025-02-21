@@ -1,4 +1,5 @@
-
+// SocialShare.tsx
+import React from "react";
 import {
   WhatsappShareButton,
   EmailShareButton,
@@ -41,20 +42,16 @@ export const SocialShare = ({
   const { t } = useTranslation();
   
   const constructBitbobUrl = () => {
-    // Format the URL according to the Bitbob native app specification
     const baseUrl = "https://bitbob.app/sign/";
-    const currency = isAmountInXRP ? "XRP" : selectedFiat;
-    
-    // Build query parameters matching the iOS/Android app format
+    // Build query parameters with fixed variable names
     const params = new URLSearchParams({
       Amount: amount || "",
-      addr: merchantName || "", // Using merchantName instead of firstname
-      Name: xrpAddress || "",
+      addr: xrpAddress || "",
+      Name: merchantName || "",
       Ident: productId || "",
-      giphy: "", // We don't have GIF support, so leaving blank
+      giphy: "26", // Fixed to number 26
       purpose: productName || "",
     });
-
     const url = `${baseUrl}?${params.toString().replace(/%20/g, "+")}`;
     console.debug("[Share] Generated Bitbob URL:", url);
     return url;
@@ -62,10 +59,9 @@ export const SocialShare = ({
 
   const generateShareText = () => {
     const currency = isAmountInXRP ? "XRP" : selectedFiat;
-    const baseText = `${merchantName || "Someone"} is requesting ${currency}${amount}`;
-    const purposeText = productName ? ` for ${productName}` : "";
-    const finalText = `${baseText}${purposeText}. Please click on URL and complete payment.\n\n${constructBitbobUrl()}`;
-    
+    const baseText = `${merchantName || "Someone"} ${t("is requesting")} ${currency}${amount}`;
+    const purposeText = productName ? ` ${t("for")} ${productName}` : "";
+    const finalText = `${baseText}${purposeText}. ${t("First verify if this request is expected and valid and if you are sure, please click on URL to proceed with payment.")}\n\n${constructBitbobUrl()}`;
     console.debug("[Share] Generated share text:", finalText);
     return finalText;
   };
@@ -99,4 +95,3 @@ export const SocialShare = ({
     </div>
   );
 };
-

@@ -45,7 +45,7 @@ const Index = () => {
   const [selectedFiat, setSelectedFiat] = useState("USD");
   const [qrData, setQrData] = useState("");
   const [showNumpad, setShowNumpad] = useState(false);
-  const [qrStyle, setQrStyle] = useState("modern-default");
+  const [qrStyle, setQrStyle] = useState("custom-logo");
   const numpadTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -555,8 +555,9 @@ const Index = () => {
                     <SelectValue placeholder="Select style" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="custom-logo">Custom Logo Style</SelectItem>
                     <SelectItem value="modern-default">Modern Dots - Classic</SelectItem>
-                    <SelectItem value="modern-purple">Modern Dots - Purple</SelectItem>
+                    {/* <SelectItem value="modern-purple">Modern Dots - Purple</SelectItem>
                     <SelectItem value="modern-sunset">Modern Dots - Sunset</SelectItem>
                     <SelectItem value="modern-ocean">Modern Dots - Ocean</SelectItem>
                     <SelectItem value="modern-forest">Modern Dots - Forest</SelectItem>
@@ -565,10 +566,9 @@ const Index = () => {
                     <SelectItem value="modern-cosmic">Modern Dots - Cosmic</SelectItem>
                     <SelectItem value="modern-rainbow">Modern Dots - Rainbow</SelectItem>
                     <SelectItem value="modern-emerald">Modern Dots - Emerald</SelectItem>
-                    <SelectItem value="modern-golden">Modern Dots - Golden</SelectItem>
-                    <SelectItem value="gradient">Gradient Style</SelectItem>
-                    <SelectItem value="rounded">Rounded Style</SelectItem>
-                    <SelectItem value="custom-logo">Custom Logo Style</SelectItem>
+                    <SelectItem value="modern-golden">Modern Dots - Golden</SelectItem> */}
+                    {/* <SelectItem value="gradient">Gradient Style</SelectItem>
+                    <SelectItem value="rounded">Rounded Style</SelectItem> */}
                   </SelectContent>
                 </Select>
 
@@ -582,8 +582,13 @@ const Index = () => {
                 <SocialShare
                   url="https://bitbob.app"
                   title={`${formData.merchantName || ""} ${formData.productName || ""} ${isAmountInXRP ? "XRP" : selectedFiat} ${formData.amount}`}
-                  emailSubject="Bitbob Payment Request"
-                  emailBody={qrData}
+                  amount={formData.amount}
+                  merchantName={formData.merchantName}
+                  xrpAddress={formData.xrpAddress}
+                  productId={formData.productId}
+                  productName={formData.productName}
+                  isAmountInXRP={isAmountInXRP}
+                  selectedFiat={selectedFiat}
                 />
               </div>
             </Card>

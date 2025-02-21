@@ -1,4 +1,3 @@
-
 {
   "title": "Bitbob Payment Request",
   "subtitle": "Generate a QR code for payment requests",
@@ -37,9 +36,19 @@
   },
   "qrCode": {
     "title": "Payment Request - Scan me with Bitbob App",
+    "generating": "Generating QR code...",
     "logoUpload": {
       "label": "Logo Image ({{width}}x{{height}}px)",
       "help": "Logo will be resized to fit in a {{width}}x{{height}}px area"
+    },
+    "customization": {
+      "fgColor": "QR Code Foreground Color",
+      "bgColor": "QR Code Background Color",
+      "eyeColor": "QR Code Eye Color",
+      "eyeRadius": "QR Code Eye Radius",
+      "logoPaddingStyle": "Logo Padding Style",
+      "square": "Square",
+      "circle": "Circle"
     }
   },
   "toasts": {
@@ -57,4 +66,3 @@
     }
   }
 }
-

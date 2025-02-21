@@ -1,4 +1,3 @@
-
 {
   "title": "Bitbob-Zahlungsaufforderung",
   "subtitle": "Generieren eines QR-Codes für Zahlungsaufforderungen",
@@ -36,10 +35,20 @@
     "moreOptions": "Weitere Optionen"
   },
   "qrCode": {
-    "title": "Zahlungsaufforderung - Scannen Sie mit der Bitbob App",
+    "scanText": "Scannen Sie mit der Bitbob.app",
+    "generating": "QR-Code wird generiert...",
     "logoUpload": {
       "label": "Logo-Bild ({{width}}x{{height}}px)",
-      "help": "Logo wird auf {{width}}x{{height}}px Bereich angepasst"
+      "help": "Logo wird auf einen Bereich von {{width}}x{{height}}px angepasst"
+    },
+    "customization": {
+      "fgColor": "Vordergrundfarbe des QR-Codes",
+      "bgColor": "Hintergrundfarbe des QR-Codes",
+      "eyeColor": "Augenfarbe des QR-Codes",
+      "eyeRadius": "Augenradius des QR-Codes",
+      "logoPaddingStyle": "Logo-Abstandsstil",
+      "square": "Quadrat",
+      "circle": "Kreis"
     }
   },
   "toasts": {
@@ -57,4 +66,3 @@
     }
   }
 }
-
