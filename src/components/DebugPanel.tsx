@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Bug } from "lucide-react";
@@ -72,4 +72,3 @@ export const DebugPanel = () => {
     </div>
   );
 };
-

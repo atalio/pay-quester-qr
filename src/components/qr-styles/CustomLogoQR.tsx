@@ -53,7 +53,7 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
           logoWidth={64}
           logoHeight={64}
           logoOpacity={1}
-          backgroundColor="#ffffff"
+          bgColor="#ffffff"
           fgColor="#403E43"
           removeQrCodeBehindLogo={true}
         />
@@ -79,4 +79,3 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
     </div>
   );
 };
-
