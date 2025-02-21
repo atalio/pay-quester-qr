@@ -1,4 +1,3 @@
-// CustomLogoQR.tsx
 import { useEffect, useRef, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 interface CustomLogoQRProps {
   value: string;
+  onQrGenerated?: (url: string) => void;
 }
 
 const MAX_LOGO_SIZE = {
@@ -18,31 +18,28 @@ const MAX_LOGO_SIZE = {
   height: 64,
 };
 
-// For this example, we hardcode the predefined logos.
-// In production, you might generate this list dynamically.
+// Hardcoded predefined logos; default is "Bitbob"
 const predefinedLogos = [
   { name: "Bitbob", url: "/public/favicon.ico" },
   { name: "XRPL", url: "/qrinput/xrpl.png" },
-  // Uncomment or add additional logos as needed:
-  // { name: "logo2.png", url: "/qrinput/logo2.png" },
-  // { name: "logo3.png", url: "/qrinput/logo3.png" },
+  // Add more logos as needed.
 ];
 
-export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
-  // Use a default logo from the /qrinput folder (adjust path as needed)
-  const [customLogo, setCustomLogo] = useState<string>("/qrinput/xrpl.png");
+export const CustomLogoQR = ({ value, onQrGenerated }: CustomLogoQRProps) => {
+  // Default selected logo is Bitbob.
+  const [customLogo, setCustomLogo] = useState<string>("/public/favicon.ico");
   const [finalQrUrl, setFinalQrUrl] = useState<string>("");
   const [fgColor, setFgColor] = useState<string>("#403E43");
   const [bgColor, setBgColor] = useState<string>("#ffffff");
   const [eyeColor, setEyeColor] = useState<string>("#005794");
   const [eyeRadius, setEyeRadius] = useState<number>(12);
   const [logoPaddingStyle, setLogoPaddingStyle] = useState<"square" | "circle">("square");
-  const [selectedPredefinedLogo, setSelectedPredefinedLogo] = useState<string>("");
+  const [selectedPredefinedLogo, setSelectedPredefinedLogo] = useState<string>("/public/favicon.ico");
   const qrWrapperRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { t } = useTranslation();
 
-  // 1) Validate & resize uploaded image
+  // Validate & resize uploaded image
   const validateAndResizeImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -77,13 +74,14 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
     });
   };
 
-  // 2) Handle file upload (remains unchanged)
+  // Handle file upload
   const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
     try {
       const resizedLogo = await validateAndResizeImage(file);
       setCustomLogo(resizedLogo);
+      setSelectedPredefinedLogo(""); // Clear predefined selection
       console.debug("[UI] Custom logo uploaded and resized");
       toast({
         title: t("toasts.logoUpload.success"),
@@ -99,20 +97,20 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
     }
   };
 
-  // 3) Handle selection from predefined logos dropdown
+  // Handle predefined logo selection from dropdown
   const handlePredefinedLogoSelect = (logoUrl: string) => {
     setSelectedPredefinedLogo(logoUrl);
     setCustomLogo(logoUrl);
   };
 
-  // 4) Merge scan text and QR code into one canvas
+  // Merge scan text and QR code into one canvas
   const mergeTextAndQr = () => {
     if (!qrWrapperRef.current) return;
     const qrCanvas = qrWrapperRef.current.querySelector("canvas");
     if (!qrCanvas) return;
     const qrWidth = qrCanvas.width;
     const qrHeight = qrCanvas.height;
-    const extraTop = 50;
+    const extraTop = 80;
     const finalCanvas = document.createElement("canvas");
     finalCanvas.width = qrWidth;
     finalCanvas.height = qrHeight + extraTop;
@@ -120,27 +118,30 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
     if (!ctx) return;
     ctx.fillStyle = "#FFFFFF";
     ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-    const scanText = t("qrCode.scanText", "Scan me with Bitbob.app");
+    const scanText = t("qrCode.scanText", "Bitbob.app");
     ctx.fillStyle = "#005794";
-    ctx.font = "bold 30px poppins";
+    ctx.font = "bold 40px poppins";
     const textWidth = ctx.measureText(scanText).width;
     const textX = (finalCanvas.width - textWidth) / 2;
-    const textY = 30;
+    const textY = 60;
     ctx.fillText(scanText, textX, textY);
     ctx.drawImage(qrCanvas, 0, extraTop);
+
+    // Optionally mask the logo area if needed (not shown here)
+
     const mergedUrl = finalCanvas.toDataURL("image/png");
     setFinalQrUrl(mergedUrl);
+    // Lift the final QR URL to parent if callback provided
+    if (onQrGenerated) {
+      onQrGenerated(mergedUrl);
+    }
   };
 
-  // 5) Update merged image when dependencies change
   useEffect(() => {
-    const timer = setTimeout(() => {
-      mergeTextAndQr();
-    }, 300);
+    const timer = setTimeout(() => mergeTextAndQr(), 300);
     return () => clearTimeout(timer);
   }, [value, customLogo, t, fgColor, bgColor, eyeColor, eyeRadius, logoPaddingStyle]);
 
-  // 6) Download final image
   const handleDownload = () => {
     if (!finalQrUrl) return;
     const link = document.createElement("a");
@@ -156,23 +157,23 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
     <div className="space-y-4">
       {/* Hidden container for generating the QR code */}
       <div ref={qrWrapperRef} style={{ display: "none" }}>
-        <QRCode
-          value={value}
-          size={256}
-          quietZone={16}
-          qrStyle="dots"
-          eyeRadius={eyeRadius}
-          eyeColor={eyeColor}
-          logoImage={customLogo}
-          logoWidth={64}
-          logoHeight={64}
-          logoOpacity={1}
-          logoPadding={8}
-          logoPaddingStyle={logoPaddingStyle}
-          removeQrCodeBehindLogo={true}
-          bgColor={bgColor}
-          fgColor={fgColor}
-        />
+      <QRCode
+  value={value}
+  size={256}
+  quietZone={20}                // Increased quiet zone for extra margin
+  qrStyle="dots"
+  eyeRadius={eyeRadius}
+  eyeColor={eyeColor}
+  logoImage={customLogo}
+  logoWidth={64}
+  logoHeight={64}
+  logoOpacity={0.6}             // Semi-transparent logo to help preserve data
+  logoPadding={16}              // More padding behind the logo to clear QR dots
+  logoPaddingStyle={logoPaddingStyle}
+  removeQrCodeBehindLogo={true}
+  bgColor={bgColor}
+  fgColor={fgColor}
+/>
       </div>
 
       {/* Display merged final QR (text + code) */}
@@ -182,7 +183,13 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
         ) : (
           <p className="text-sm text-gray-500">{t("qrCode.generating")}</p>
         )}
-      </div>
+          </div>
+        <div className="flex justify-center">
+          <Button variant="outline" onClick={handleDownload} className="gap-2">
+            <Download className="h-4 w-4" />
+            {t("buttons.exportPng")}
+          </Button>
+        </div>
 
       {/* Customization Options */}
       <div className="space-y-4">
@@ -272,14 +279,11 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
               <option value="circle">{t("qrCode.customization.circle")}</option>
             </select>
           </div>
-        </div>
-        <div className="flex justify-center">
-          <Button variant="outline" onClick={handleDownload} className="gap-2">
-            <Download className="h-4 w-4" />
-            {t("buttons.exportPng")}
-          </Button>
+
         </div>
       </div>
     </div>
   );
 };
+
+export default CustomLogoQR;

@@ -1,4 +1,3 @@
-// Index.tsx
 import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -29,6 +28,123 @@ import { Footer } from "@/components/Footer";
 import { XRPAddressInput } from "@/components/XRPAddressInput";
 import { CustomLogoQR } from "@/components/qr-styles/CustomLogoQR";
 import { DebugPanel } from "@/components/DebugPanel";
+
+const languageLabels: Record<string, string> = {
+  af: "Afrikaans",
+  sq: "Albanian",
+  am: "Amharic",
+  ar: "Arabic",
+  hy: "Armenian",
+  as: "Assamese",
+  az: "Azerbaijani",
+  bn: "Bangla",
+  ba: "Bashkir",
+  eu: "Basque",
+  bs: "Bosnian",
+  bg: "Bulgarian",
+  yue: "Cantonese (Traditional)",
+  ca: "Catalan",
+  lzh: "Chinese Literary",
+  "zh-Hans": "Chinese (Simplified)",
+  "zh-Hant": "Chinese (Traditional)",
+  hr: "Croatian",
+  cs: "Czech",
+  da: "Danish",
+  prs: "Dari",
+  dv: "Divehi",
+  nl: "Dutch",
+  en: "English",
+  et: "Estonian",
+  fo: "Faroese",
+  fj: "Fijian",
+  fil: "Filipino",
+  fi: "Finnish",
+  fr: "French",
+  "fr-CA": "French (Canada)",
+  gl: "Galician",
+  ka: "Georgian",
+  de: "German",
+  el: "Greek",
+  gu: "Gujarati",
+  ht: "Haitian Creole",
+  he: "Hebrew",
+  hi: "Hindi",
+  mww: "Hmong Daw",
+  hu: "Hungarian",
+  is: "Icelandic",
+  id: "Indonesian",
+  ikt: "Inuinnaqtun",
+  iu: "Inuktitut",
+  "iu-Latn": "Inuktitut (Latin)",
+  ga: "Irish",
+  it: "Italian",
+  ja: "Japanese",
+  kn: "Kannada",
+  kk: "Kazakh",
+  km: "Khmer",
+  "tlh-Latn": "Klingon (Latin)",
+  ko: "Korean",
+  ku: "Kurdish (Central)",
+  kmr: "Kurdish (Northern)",
+  ky: "Kyrgyz",
+  lo: "Lao",
+  lv: "Latvian",
+  lt: "Lithuanian",
+  mk: "Macedonian",
+  mg: "Malagasy",
+  ms: "Malay",
+  ml: "Malayalam",
+  mt: "Maltese",
+  mr: "Marathi",
+  "mn-Cyrl": "Mongolian (Cyrillic)",
+  "mn-Mong": "Mongolian (Traditional)",
+  my: "Myanmar (Burmese)",
+  mi: "Māori",
+  ne: "Nepali",
+  nb: "Norwegian",
+  or: "Odia",
+  ps: "Pashto",
+  fa: "Persian",
+  pl: "Polish",
+  pt: "Portuguese (Brazil)",
+  "pt-PT": "Portuguese (Portugal)",
+  pa: "Punjabi",
+  otq: "Querétaro Otomi",
+  ro: "Romanian",
+  ru: "Russian",
+  sm: "Samoan",
+  "sr-Cyrl": "Serbian (Cyrillic)",
+  "sr-Latn": "Serbian (Latin)",
+  sk: "Slovak",
+  sl: "Slovenian",
+  so: "Somali",
+  es: "Spanish",
+  sw: "Swahili",
+  sv: "Swedish",
+  ty: "Tahitian",
+  ta: "Tamil",
+  tt: "Tatar",
+  te: "Telugu",
+  th: "Thai",
+  bo: "Tibetan",
+  ti: "Tigrinya",
+  to: "Tongan",
+  tr: "Turkish",
+  tk: "Turkmen",
+  uk: "Ukrainian",
+  hsb: "Upper Sorbian",
+  ur: "Urdu",
+  ug: "Uyghur",
+  uz: "Uzbek (Latin)",
+  vi: "Vietnamese",
+  cy: "Welsh",
+  yua: "Yucatec Maya",
+  zu: "Zulu",
+};
+
+const getLanguageLabel = (lng: string): string => {
+  return languageLabels[lng] || lng;
+};
 
 const Index = () => {
   const { toast } = useToast();
@@ -74,9 +190,7 @@ const Index = () => {
       if (numpadTimeoutRef.current) {
         clearTimeout(numpadTimeoutRef.current);
       }
-      numpadTimeoutRef.current = setTimeout(() => {
-        setShowNumpad(false);
-      }, 800);
+      numpadTimeoutRef.current = setTimeout(() => setShowNumpad(false), 800);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
       console.debug(`[UI] ${name} updated:`, value);
@@ -97,20 +211,12 @@ const Index = () => {
     setFormData((prev) => ({ ...prev, amount: prev.amount + value }));
   };
 
-  const handleNumpadClose = () => {
-    setShowNumpad(false);
-  };
+  const handleNumpadClose = () => setShowNumpad(false);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
   };
 
-  const getLanguageLabel = (lng: string): string => {
-    // ... (language mapping unchanged)
-    return lng;
-  };
-
-  // Adjusted QR content to be comma-separated for compatibility with Android KT code
   const generateQRCode = () => {
     if (!formData.amount || !formData.xrpAddress) {
       toast({
@@ -120,6 +226,7 @@ const Index = () => {
       });
       return;
     }
+    // QR content is comma-separated to match Android KT code expectations.
     const qrContent = `Merchant: ${formData.merchantName || ""}, Product: ${formData.productName || ""}, Product ID: ${formData.productId || ""}, Amount: ${formData.amount}, Currency: ${isAmountInXRP ? "XRP" : selectedFiat}, XRP Address: ${formData.xrpAddress}`;
     setQrData(qrContent);
     console.debug("[UI] QR code generated");
@@ -132,37 +239,42 @@ const Index = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-50 to-gray-100">
-      <header className="w-full py-4 px-4 bg-white/80 backdrop-blur-sm border-b">
-        <div className="max-w-2xl mx-auto">
-          <img 
-            src="/lovable-uploads/7450c25d-f739-43d4-a8fc-a3ddf2cea909.png" 
-            alt="Bitbob" 
-            className="h-8 w-auto"
-          />
-        </div>
-      </header>
+     <header className="w-full py-4 px-4 bg-white/80 backdrop-blur-sm border-b relative">
+  <div className="max-w-2xl mx-auto flex items-center justify-between">
+    {/* Left: Logo */}
+    <div className="flex items-center gap-4">
+      <img
+        src="/lovable-uploads/7450c25d-f739-43d4-a8fc-a3ddf2cea909.png"
+        alt="Bitbob"
+        className="h-8 w-auto"
+      />
+    </div>
+    {/* Center: Title & Subtitle (absolutely centered) */}
+    <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+      <h1 className="text-xl font-bold text-gray-900">{t("title")}</h1>
+      <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+    </div>
+    {/* Right: Language Switch */}
+    <div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon">
+            <Globe className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="max-h-[800px] overflow-y-auto text-sm">
+          {languages.map((lng) => (
+            <DropdownMenuItem key={lng} onClick={() => changeLanguage(lng)}>
+              {getLanguageLabel(lng)}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  </div>
+</header>
       <main className="flex-1 p-4 md:p-8">
         <div className="max-w-2xl mx-auto space-y-8">
-          <div className="flex justify-end mb-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Globe className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="max-h-[800px] overflow-y-auto text-sm">
-                {languages.map((lng) => (
-                  <DropdownMenuItem key={lng} onClick={() => changeLanguage(lng)}>
-                    {getLanguageLabel(lng)}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">{t("title")}</h1>
-            <p className="text-muted-foreground">{t("subtitle")}</p>
-          </div>
           <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-in">
             <div className="space-y-4">
               <div className="space-y-4">
@@ -179,18 +291,13 @@ const Index = () => {
                         value={formData.amount}
                         onChange={handleInputChange}
                         onFocus={() => setShowNumpad(true)}
-                        placeholder={`${t("fields.amount.placeholder")} ${
-                          isAmountInXRP ? t("currency.xrp") : selectedFiat
-                        }`}
+                        placeholder={`${t("fields.amount.placeholder")} ${isAmountInXRP ? t("currency.xrp") : selectedFiat}`}
                         className="transition-all focus:ring-2 focus:ring-blue-500"
                         readOnly
                       />
                       {showNumpad && (
                         <div className="absolute top-full left-0 z-50 mt-2">
-                          <NumericKeypad 
-                            onKeyPress={handleNumpadClick}
-                            onClose={handleNumpadClose}
-                          />
+                          <NumericKeypad onKeyPress={handleNumpadClick} onClose={handleNumpadClose} />
                         </div>
                       )}
                     </div>
@@ -199,9 +306,7 @@ const Index = () => {
                         checked={isAmountInXRP}
                         onCheckedChange={(checked) => {
                           setIsAmountInXRP(checked);
-                          if (!checked) {
-                            setSelectedFiat("USD");
-                          }
+                          if (!checked) setSelectedFiat("USD");
                           console.debug("[UI] Currency type changed:", checked ? "XRP" : "Fiat");
                         }}
                       />
@@ -288,10 +393,7 @@ const Index = () => {
                   </div>
                 </div>
               )}
-              <Button
-                onClick={generateQRCode}
-                className="w-full bg-blue-600 hover:bg-blue-700 transition-colors"
-              >
+              <Button onClick={generateQRCode} className="w-full bg-blue-600 hover:bg-blue-700 transition-colors">
                 {t("buttons.generate")}
               </Button>
             </div>
@@ -327,6 +429,7 @@ const Index = () => {
                   </div>
                 </div>
               </div>
+              <p className="text-gray-600 whitespace-pre-line text-sm">{qrData}</p>
             </Card>
           )}
         </div>
