@@ -20,7 +20,7 @@ const MAX_LOGO_SIZE = {
 
 // Hardcoded predefined logos; default is "Bitbob"
 const predefinedLogos = [
-  { name: "Bitbob", url: "/public/favicon.ico" },
+  { name: "Bitbob", url: "/qrinput/favicon.ico"},
   { name: "XRPL", url: "/qrinput/xrpl.png" },
   // Add more logos as needed.
 ];
