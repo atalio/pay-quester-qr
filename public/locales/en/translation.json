@@ -35,6 +35,7 @@
     "moreOptions": "More Options"
   },
   "qrCode": {
+    "predefinedLogos": "Predefined Logos",
     "title": "Payment Request - Scan me with Bitbob App",
     "generating": "Generating QR code...",
     "logoUpload": {

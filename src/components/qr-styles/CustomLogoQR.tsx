@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useTranslation } from "react-i18next";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface CustomLogoQRProps {
   value: string;
@@ -17,21 +18,31 @@ const MAX_LOGO_SIZE = {
   height: 64,
 };
 
+// For this example, we hardcode the predefined logos.
+// In production, you might generate this list dynamically.
+const predefinedLogos = [
+  { name: "Bitbob", url: "/public/favicon.ico" },
+  { name: "XRPL", url: "/qrinput/xrpl.png" },
+  // Uncomment or add additional logos as needed:
+  // { name: "logo2.png", url: "/qrinput/logo2.png" },
+  // { name: "logo3.png", url: "/qrinput/logo3.png" },
+];
+
 export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
-  const [customLogo, setCustomLogo] = useState<string>(
-    "/pay-quester-qr/public/favicon.ico"
-  );
+  // Use a default logo from the /qrinput folder (adjust path as needed)
+  const [customLogo, setCustomLogo] = useState<string>("/qrinput/xrpl.png");
   const [finalQrUrl, setFinalQrUrl] = useState<string>("");
   const [fgColor, setFgColor] = useState<string>("#403E43");
   const [bgColor, setBgColor] = useState<string>("#ffffff");
   const [eyeColor, setEyeColor] = useState<string>("#005794");
   const [eyeRadius, setEyeRadius] = useState<number>(12);
   const [logoPaddingStyle, setLogoPaddingStyle] = useState<"square" | "circle">("square");
+  const [selectedPredefinedLogo, setSelectedPredefinedLogo] = useState<string>("");
   const qrWrapperRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   const { t } = useTranslation();
 
-  // 1) Validate & resize the uploaded image
+  // 1) Validate & resize uploaded image
   const validateAndResizeImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const img = new Image();
@@ -57,9 +68,7 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
         ctx.drawImage(img, x, y, newWidth, newHeight);
         resolve(canvas.toDataURL("image/png"));
       };
-      img.onerror = () => {
-        reject(new Error("Error loading image"));
-      };
+      img.onerror = () => reject(new Error("Error loading image"));
       const reader = new FileReader();
       reader.onload = (e) => {
         img.src = e.target?.result as string;
@@ -68,7 +77,7 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
     });
   };
 
-  // 2) Handle the file upload
+  // 2) Handle file upload (remains unchanged)
   const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -78,10 +87,7 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
       console.debug("[UI] Custom logo uploaded and resized");
       toast({
         title: t("toasts.logoUpload.success"),
-        description: t("toasts.logoUpload.resized", {
-          width: MAX_LOGO_SIZE.width,
-          height: MAX_LOGO_SIZE.height,
-        }),
+        description: t("toasts.logoUpload.resized", { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height }),
       });
     } catch (error) {
       console.error("[UI] Error processing logo:", error);
@@ -93,38 +99,40 @@ export const CustomLogoQR = ({ value }: CustomLogoQRProps) => {
     }
   };
 
-  // 3) Combine translated scan text + final QR into one canvas
-// In your mergeTextAndQr() function, use a fallback string to verify the translation key is working:
-const mergeTextAndQr = () => {
-  if (!qrWrapperRef.current) return;
-  const qrCanvas = qrWrapperRef.current.querySelector("canvas");
-  if (!qrCanvas) return;
-  const qrWidth = qrCanvas.width;
-  const qrHeight = qrCanvas.height;
-  const extraTop = 50;
-  const finalCanvas = document.createElement("canvas");
-  finalCanvas.width = qrWidth;
-  finalCanvas.height = qrHeight + extraTop;
-  const ctx = finalCanvas.getContext("2d");
-  if (!ctx) return;
-  ctx.fillStyle = "#FFFFFF";
-  ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
-  
-  // Use a fallback value to ensure the key is working
-  const scanText = t("qrCode.scanText", "Scan me with Bitbob.app");
-  ctx.fillStyle = "#005794";
-  ctx.font = "bold 30px poppins";
-  const textWidth = ctx.measureText(scanText).width;
-  const textX = (finalCanvas.width - textWidth) / 2;
-  const textY = 30;
-  ctx.fillText(scanText, textX, textY);
-  
-  ctx.drawImage(qrCanvas, 0, extraTop);
-  const mergedUrl = finalCanvas.toDataURL("image/png");
-  setFinalQrUrl(mergedUrl);
-};
+  // 3) Handle selection from predefined logos dropdown
+  const handlePredefinedLogoSelect = (logoUrl: string) => {
+    setSelectedPredefinedLogo(logoUrl);
+    setCustomLogo(logoUrl);
+  };
 
-  // 4) Run merge after each render
+  // 4) Merge scan text and QR code into one canvas
+  const mergeTextAndQr = () => {
+    if (!qrWrapperRef.current) return;
+    const qrCanvas = qrWrapperRef.current.querySelector("canvas");
+    if (!qrCanvas) return;
+    const qrWidth = qrCanvas.width;
+    const qrHeight = qrCanvas.height;
+    const extraTop = 50;
+    const finalCanvas = document.createElement("canvas");
+    finalCanvas.width = qrWidth;
+    finalCanvas.height = qrHeight + extraTop;
+    const ctx = finalCanvas.getContext("2d");
+    if (!ctx) return;
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+    const scanText = t("qrCode.scanText", "Scan me with Bitbob.app");
+    ctx.fillStyle = "#005794";
+    ctx.font = "bold 30px poppins";
+    const textWidth = ctx.measureText(scanText).width;
+    const textX = (finalCanvas.width - textWidth) / 2;
+    const textY = 30;
+    ctx.fillText(scanText, textX, textY);
+    ctx.drawImage(qrCanvas, 0, extraTop);
+    const mergedUrl = finalCanvas.toDataURL("image/png");
+    setFinalQrUrl(mergedUrl);
+  };
+
+  // 5) Update merged image when dependencies change
   useEffect(() => {
     const timer = setTimeout(() => {
       mergeTextAndQr();
@@ -132,7 +140,7 @@ const mergeTextAndQr = () => {
     return () => clearTimeout(timer);
   }, [value, customLogo, t, fgColor, bgColor, eyeColor, eyeRadius, logoPaddingStyle]);
 
-  // 5) Download final combined QR
+  // 6) Download final image
   const handleDownload = () => {
     if (!finalQrUrl) return;
     const link = document.createElement("a");
@@ -176,8 +184,41 @@ const mergeTextAndQr = () => {
         )}
       </div>
 
-      {/* Options for customization */}
+      {/* Customization Options */}
       <div className="space-y-4">
+        {/* Predefined Logos Dropdown */}
+        <div>
+          <Label className="mb-2">{t("qrCode.predefinedLogos")}</Label>
+          <Select value={selectedPredefinedLogo} onValueChange={handlePredefinedLogoSelect}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={t("qrCode.selectPredefinedLogo")} />
+            </SelectTrigger>
+            <SelectContent>
+              {predefinedLogos.map((logo) => (
+                <SelectItem key={logo.name} value={logo.url}>
+                  {logo.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {/* Upload Option */}
+        <div className="space-y-2">
+          <Label htmlFor="logo-upload">
+            {t("qrCode.logoUpload.label", { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height })}
+          </Label>
+          <Input
+            id="logo-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleLogoUpload}
+            className="cursor-pointer"
+          />
+          <p className="text-xs text-muted-foreground">
+            {t("qrCode.logoUpload.help", { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height })}
+          </p>
+        </div>
+        {/* Color and Style Options */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="fgColor">{t("qrCode.customization.fgColor")}</Label>
@@ -219,7 +260,7 @@ const mergeTextAndQr = () => {
               className="w-full"
             />
           </div>
-          <div className="space-y-2 col-span-2">
+          <div className="col-span-2 space-y-2">
             <Label htmlFor="logoPaddingStyle">{t("qrCode.customization.logoPaddingStyle")}</Label>
             <select
               id="logoPaddingStyle"
@@ -231,22 +272,6 @@ const mergeTextAndQr = () => {
               <option value="circle">{t("qrCode.customization.circle")}</option>
             </select>
           </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="logo-upload">
-            {t("qrCode.logoUpload.label", { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height })}
-          </Label>
-          <Input
-            id="logo-upload"
-            type="file"
-            accept="image/*"
-            onChange={handleLogoUpload}
-            className="cursor-pointer"
-          />
-          <p className="text-xs text-muted-foreground">
-            {t("qrCode.logoUpload.help", { width: MAX_LOGO_SIZE.width, height: MAX_LOGO_SIZE.height })}
-          </p>
         </div>
         <div className="flex justify-center">
           <Button variant="outline" onClick={handleDownload} className="gap-2">

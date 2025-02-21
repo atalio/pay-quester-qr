@@ -40,16 +40,15 @@ export const SocialShare = ({
   selectedFiat,
 }: SocialShareProps) => {
   const { t } = useTranslation();
-  
+
   const constructBitbobUrl = () => {
     const baseUrl = "https://bitbob.app/sign/";
-    // Build query parameters with fixed variable names
     const params = new URLSearchParams({
       Amount: amount || "",
       addr: xrpAddress || "",
       Name: merchantName || "",
       Ident: productId || "",
-      giphy: "26", // Fixed to number 26
+      giphy: "26", // Fixed value
       purpose: productName || "",
     });
     const url = `${baseUrl}?${params.toString().replace(/%20/g, "+")}`;
@@ -61,7 +60,8 @@ export const SocialShare = ({
     const currency = isAmountInXRP ? "XRP" : selectedFiat;
     const baseText = `${merchantName || "Someone"} ${t("is requesting")} ${currency}${amount}`;
     const purposeText = productName ? ` ${t("for")} ${productName}` : "";
-    const finalText = `${baseText}${purposeText}. ${t("First verify if this request is expected and valid and if you are sure, please click on URL to proceed with payment.")}\n\n${constructBitbobUrl()}`;
+    // Removed the duplicated URL from the share text.
+    const finalText = `${baseText}${purposeText}. ${t("First verify if this request is expected and valid and if you are sure, please click on URL to proceed with payment.")}`;
     console.debug("[Share] Generated share text:", finalText);
     return finalText;
   };
