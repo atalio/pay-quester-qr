@@ -19,12 +19,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe, Store, Package, DollarSign, Wallet, ChevronDown, ChevronUp, Hash } from "lucide-react";
+import { Globe, Store, Package, DollarSign, Hash, ChevronDown, ChevronUp } from "lucide-react";
 import { fiatCurrencies } from "@/utils/currencies";
 import { NumericKeypad } from "@/components/NumericKeypad";
 import { QRCodeDisplay } from "@/components/QRCodeDisplay";
 import { SocialShare } from "@/components/SocialShare";
 import { Footer } from "@/components/Footer";
+import { XRPAddressInput } from "@/components/XRPAddressInput";
+import { CustomLogoQR } from "@/components/qr-styles/CustomLogoQR";
+import { DebugPanel } from "@/components/DebugPanel";
 
 const Index = () => {
   const { toast } = useToast();
@@ -42,6 +45,7 @@ const Index = () => {
   const [selectedFiat, setSelectedFiat] = useState("USD");
   const [qrData, setQrData] = useState("");
   const [showNumpad, setShowNumpad] = useState(false);
+  const [qrStyle, setQrStyle] = useState("modern-default");
   const numpadTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
@@ -67,6 +71,7 @@ const Index = () => {
       const finalValue = parts[0] + (parts.length > 1 ? "." + parts[1] : "");
       
       setFormData((prev) => ({ ...prev, [name]: finalValue }));
+      console.debug("[UI] Amount updated:", finalValue);
       
       if (numpadTimeoutRef.current) {
         clearTimeout(numpadTimeoutRef.current);
@@ -76,6 +81,7 @@ const Index = () => {
       }, 800);
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
+      console.debug(`[UI] ${name} updated:`, value);
     }
   };
 
@@ -351,11 +357,12 @@ const Index = () => {
 
     const qrContent = `Merchant: ${formData.merchantName || ""}\nProduct: ${formData.productName || ""}\nProduct ID: ${formData.productId || ""}\nAmount: ${formData.amount}\nCurrency: ${isAmountInXRP ? "XRP" : selectedFiat}\nXRP Address: ${formData.xrpAddress}`;
     setQrData(qrContent);
+    console.debug("[UI] QR code generated");
   };
 
-  const getShareableContent = () => {
-    const currency = isAmountInXRP ? "XRP" : selectedFiat;
-    return `${formData.merchantName || ""} ${formData.productName || ""} ${currency} ${formData.amount}`;
+  const handleXRPAddressChange = (value: string) => {
+    setFormData(prev => ({ ...prev, xrpAddress: value }));
+    console.debug("[UI] XRP address updated:", value);
   };
 
   return (
@@ -380,11 +387,11 @@ const Index = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="max-h-[800px] overflow-y-auto text-sm">
-              {languages.map((lng) => (
-               <DropdownMenuItem key={lng} onClick={() => changeLanguage(lng)}>
-               {getLanguageLabel(lng)}
-               </DropdownMenuItem>
-              ))}
+                {languages.map((lng) => (
+                  <DropdownMenuItem key={lng} onClick={() => changeLanguage(lng)}>
+                    {getLanguageLabel(lng)}
+                  </DropdownMenuItem>
+                ))}
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -433,6 +440,7 @@ const Index = () => {
                           if (!checked) {
                             setSelectedFiat("USD");
                           }
+                          console.debug("[UI] Currency type changed:", checked ? "XRP" : "Fiat");
                         }}
                       />
                       {isAmountInXRP ? (
@@ -455,20 +463,12 @@ const Index = () => {
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="xrpAddress" className="flex items-center gap-2">
-                    <Wallet className="h-4 w-4" />
-                    {t("fields.xrpAddress.label")}
-                  </Label>
-                  <Input
-                    id="xrpAddress"
-                    name="xrpAddress"
-                    value={formData.xrpAddress}
-                    onChange={handleInputChange}
-                    placeholder={t("fields.xrpAddress.placeholder")}
-                    className="transition-all focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
+                <XRPAddressInput
+                  value={formData.xrpAddress}
+                  onChange={handleXRPAddressChange}
+                  label={t("fields.xrpAddress.label")}
+                  placeholder={t("fields.xrpAddress.placeholder")}
+                />
               </div>
 
               <Button
@@ -544,13 +544,46 @@ const Index = () => {
           {qrData && (
             <Card className="p-6 space-y-6 bg-white/80 backdrop-blur-sm shadow-lg animate-fade-up">
               <div className="text-center space-y-4">
-                <QRCodeDisplay value={qrData} />
+                <Select 
+                  value={qrStyle} 
+                  onValueChange={(value) => {
+                    setQrStyle(value);
+                    console.debug("[UI] QR style changed:", value);
+                  }}
+                >
+                  <SelectTrigger className="w-[200px] mx-auto">
+                    <SelectValue placeholder="Select style" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="modern-default">Modern Dots - Classic</SelectItem>
+                    <SelectItem value="modern-purple">Modern Dots - Purple</SelectItem>
+                    <SelectItem value="modern-sunset">Modern Dots - Sunset</SelectItem>
+                    <SelectItem value="modern-ocean">Modern Dots - Ocean</SelectItem>
+                    <SelectItem value="modern-forest">Modern Dots - Forest</SelectItem>
+                    <SelectItem value="modern-crimson">Modern Dots - Crimson</SelectItem>
+                    <SelectItem value="modern-midnight">Modern Dots - Midnight</SelectItem>
+                    <SelectItem value="modern-cosmic">Modern Dots - Cosmic</SelectItem>
+                    <SelectItem value="modern-rainbow">Modern Dots - Rainbow</SelectItem>
+                    <SelectItem value="modern-emerald">Modern Dots - Emerald</SelectItem>
+                    <SelectItem value="modern-golden">Modern Dots - Golden</SelectItem>
+                    <SelectItem value="gradient">Gradient Style</SelectItem>
+                    <SelectItem value="rounded">Rounded Style</SelectItem>
+                    <SelectItem value="custom-logo">Custom Logo Style</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {qrStyle === "custom-logo" ? (
+                  <CustomLogoQR value={qrData} />
+                ) : (
+                  <QRCodeDisplay value={qrData} />
+                )}
+
                 <p className="text-gray-600 whitespace-pre-line text-sm">{qrData}</p>
                 <SocialShare
                   url="https://bitbob.app"
-                  title={getShareableContent()}
+                  title={`${formData.merchantName || ""} ${formData.productName || ""} ${isAmountInXRP ? "XRP" : selectedFiat} ${formData.amount}`}
                   emailSubject="Bitbob Payment Request"
-                  emailBody={getShareableContent()}
+                  emailBody={qrData}
                 />
               </div>
             </Card>
@@ -558,6 +591,7 @@ const Index = () => {
         </div>
       </main>
       <Footer />
+      <DebugPanel />
     </div>
   );
 };
