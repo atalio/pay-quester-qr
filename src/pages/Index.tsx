@@ -246,13 +246,13 @@ const Index = () => {
       <img
         src="/lovable-uploads/7450c25d-f739-43d4-a8fc-a3ddf2cea909.png"
         alt="Bitbob"
-        className="h-8 w-auto"
+        className="h-6 w-auto"
       />
     </div>
     {/* Center: Title & Subtitle (absolutely centered) */}
     <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-      <h1 className="text-xl font-bold text-gray-900">{t("title")}</h1>
-      <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
+      <h1 className="text-sm font-bold text-gray-900">{t("title")}</h1>
+      <p className="text-xs text-muted-foreground">{t("subtitle")}</p>
     </div>
     {/* Right: Language Switch */}
     <div>

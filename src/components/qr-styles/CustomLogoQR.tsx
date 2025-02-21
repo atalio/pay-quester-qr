@@ -27,7 +27,7 @@ const predefinedLogos = [
 
 export const CustomLogoQR = ({ value, onQrGenerated }: CustomLogoQRProps) => {
   // Default selected logo is Bitbob.
-  const [customLogo, setCustomLogo] = useState<string>("/public/favicon.ico");
+  const [customLogo, setCustomLogo] = useState<string>("/qrinput/favicon.ico");
   const [finalQrUrl, setFinalQrUrl] = useState<string>("");
   const [fgColor, setFgColor] = useState<string>("#403E43");
   const [bgColor, setBgColor] = useState<string>("#ffffff");
@@ -120,7 +120,7 @@ export const CustomLogoQR = ({ value, onQrGenerated }: CustomLogoQRProps) => {
     ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
     const scanText = t("qrCode.scanText", "Bitbob.app");
     ctx.fillStyle = "#005794";
-    ctx.font = "bold 40px poppins";
+    ctx.font = "bold 40px arial";
     const textWidth = ctx.measureText(scanText).width;
     const textX = (finalCanvas.width - textWidth) / 2;
     const textY = 60;

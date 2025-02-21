@@ -43,23 +43,27 @@ export const SocialShare = ({
 
   const constructBitbobUrl = () => {
     const baseUrl = "https://bitbob.app/sign/";
+    // Determine the currency to use
+    const currency = isAmountInXRP ? "XRP" : selectedFiat;
     const params = new URLSearchParams({
       Amount: amount || "",
-      addr: xrpAddress || "",
-      Name: merchantName || "",
-      Ident: productId || "",
+      Currency: currency,  // New parameter for currency
+      andName: xrpAddress || "",
+      andAddr: merchantName || "",
+      // Ident: productId || "", commented else ends up in memo text of transaction (private info)
       giphy: "26", // Fixed value
-      purpose: productName || "",
+      purpose: productName || ""
     });
     const url = `${baseUrl}?${params.toString().replace(/%20/g, "+")}`;
     console.debug("[Share] Generated Bitbob URL:", url);
     return url;
   };
+  
 
   const generateShareText = () => {
     const currency = isAmountInXRP ? "XRP" : selectedFiat;
     const baseText = `${merchantName || "Someone"} ${t("is requesting")} ${currency}${amount}`;
-    const purposeText = productName ? ` ${t("for")} ${productName}` : "";
+    const purposeText = productName ? productId ? ` ${t("for")} ${productName} (${productId})` : ` ${t("for")} ${productName}` : "";
     // Removed the duplicated URL from the share text.
     const finalText = `${baseText}${purposeText}. ${t("First verify if this request is expected and valid and if you are sure, please click on URL to proceed with payment.")}`;
     console.debug("[Share] Generated share text:", finalText);
@@ -74,10 +78,10 @@ export const SocialShare = ({
       <WhatsappShareButton url={bitbobUrl} title={shareText}>
         <WhatsappIcon size={32} round />
       </WhatsappShareButton>
-      <EmailShareButton url={bitbobUrl} subject="Bitbob Payment Request" body={shareText}>
+      {/* <EmailShareButton url={bitbobUrl} subject="Bitbob Payment Request" body={shareText}>
         <EmailIcon size={32} round />
-      </EmailShareButton>
-      <TwitterShareButton url={bitbobUrl} title={shareText}>
+      </EmailShareButton> */}
+      {/* <TwitterShareButton url={bitbobUrl} title={shareText}>
         <TwitterIcon size={32} round />
       </TwitterShareButton>
       <LinkedinShareButton url={bitbobUrl} title={shareText}>
@@ -91,7 +95,7 @@ export const SocialShare = ({
       </TelegramShareButton>
       <RedditShareButton url={bitbobUrl} title={shareText}>
         <RedditIcon size={32} round />
-      </RedditShareButton>
+      </RedditShareButton> */}
     </div>
   );
 };
